@@ -52,7 +52,12 @@ def build_api_url(args: argparse.Namespace) -> str:
     return f"{API_BASE}?{urlencode(params)}"
 
 
-def fetch_fixtures(url: str) -> Any:
+def fetch_fixtures(url: str, max_pages: int = 50) -> list[dict]:
+    """Fetch all fixtures, following cursor-based pagination.
+
+    Dribl caps per_page at 30. Caller passes the base URL; this function
+    appends `cursor` query params and accumulates pages until exhausted.
+    """
     headers = {
         "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36",
         "Accept": "application/json",
@@ -64,12 +69,24 @@ def fetch_fixtures(url: str) -> Any:
         "Sec-Fetch-Mode": "cors",
         "Sec-Fetch-Site": "same-site",
     }
-    r = requests.get(url, headers=headers, timeout=30, impersonate="chrome")
-    if not r.ok:
-        print(f"HTTP {r.status_code}", file=sys.stderr)
-        print("Body:", r.text[:1000], file=sys.stderr)
-        r.raise_for_status()
-    return r.json()
+    sep = "&" if "?" in url else "?"
+    all_fixtures: list[dict] = []
+    cursor: str | None = None
+    for page in range(max_pages):
+        page_url = url if cursor is None else f"{url}{sep}cursor={cursor}"
+        r = requests.get(page_url, headers=headers, timeout=30, impersonate="chrome")
+        if not r.ok:
+            print(f"HTTP {r.status_code} on page {page}", file=sys.stderr)
+            print("Body:", r.text[:1000], file=sys.stderr)
+            r.raise_for_status()
+        payload = r.json() if isinstance(r.json(), dict) else {}
+        all_fixtures.extend(payload.get("data", []))
+        cursor = (payload.get("meta") or {}).get("next_cursor")
+        if not cursor:
+            break
+    else:
+        print(f"Hit max_pages={max_pages}; some fixtures may be missing.", file=sys.stderr)
+    return all_fixtures
 
 
 def _parse_dt(value: str) -> datetime:
@@ -181,15 +198,14 @@ def main() -> int:
     args = parser.parse_args()
 
     url = build_api_url(args)
-    payload = fetch_fixtures(url)
+    fixtures = fetch_fixtures(url)
 
     if args.inspect:
-        print(json.dumps(payload, indent=2)[:4000])
+        print(json.dumps(fixtures, indent=2)[:4000])
         return 0
 
-    fixtures = payload.get("data", []) if isinstance(payload, dict) else []
     if not fixtures:
-        print("No fixtures in payload.", file=sys.stderr)
+        print("No fixtures returned.", file=sys.stderr)
         return 1
 
     ics, n_events = build_calendar(fixtures, args.team, args.calname)
