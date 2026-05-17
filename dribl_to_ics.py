@@ -38,7 +38,7 @@ DEFAULT_DURATION_MIN = 90
 
 def build_api_url(args: argparse.Namespace) -> str:
     params: dict[str, str] = {
-        "date_range": "default",
+        "date_range": "all",
         "season": args.season,
         "tenant": args.tenant,
         "timezone": "Australia/Sydney",
