@@ -32,6 +32,7 @@ jobs:
             --league BdDDYpGwdb \
             --team am1QPnXjmw \
             --calname "Burwood FC 45 05" \
+            --match-url-base "https://cdsfa.dribl.com/matchcentre?m=" \
             --out burwood.ics
 
       - name: Diff Burwood 45 05
@@ -63,6 +64,7 @@ jobs:
             --club 3yvdWENO05 \
             --team jdylv4ZDK5 \
             --calname "Burwood FC 45 03 (O45 Div 3)" \
+            --match-url-base "https://cdsfa.dribl.com/matchcentre?m=" \
             --out burwood_45_03.ics
 
       - name: Diff Burwood 45 03
@@ -94,6 +96,7 @@ jobs:
             --club 8nm7P0kNOq \
             --team pN69xRgBm0 \
             --calname "Easts FC G09 Blue PISA" \
+            --match-url-base "https://esfa.dribl.com/matchcentre?m=" \
             --out easts_pisa.ics
 
       - name: Diff Easts PISA
