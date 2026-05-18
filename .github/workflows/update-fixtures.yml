@@ -18,6 +18,9 @@ jobs:
       - run: pip install curl_cffi
 
       # --- Burwood 45 05 (CDSFA) ---
+      - name: Snapshot Burwood 45 05 (HEAD)
+        run: git show HEAD:burwood.ics > /tmp/old_burwood.ics 2>/dev/null || : > /tmp/old_burwood.ics
+
       - name: Generate Burwood 45 05
         run: |
           python3 dribl_to_ics.py \
@@ -30,19 +33,26 @@ jobs:
             --calname "Burwood FC 45 05" \
             --out burwood.ics
 
-      - name: Detect Burwood 45 05 changes
-        id: check_burwood
+      - name: Diff Burwood 45 05
+        id: diff_burwood
         run: |
-          if git show HEAD:burwood.ics 2>/dev/null | grep -v '^DTSTAMP' > /tmp/old.ics; then
-            grep -v '^DTSTAMP' burwood.ics > /tmp/new.ics
-            if diff -q /tmp/old.ics /tmp/new.ics > /dev/null; then
-              echo "changed=false" >> $GITHUB_OUTPUT
-              exit 0
-            fi
+          body=$(python3 diff_ics.py --old /tmp/old_burwood.ics --new burwood.ics)
+          if [ -z "$body" ]; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
+            delim=$(openssl rand -hex 12)
+            {
+              echo "body<<$delim"
+              echo "$body"
+              echo "$delim"
+            } >> $GITHUB_OUTPUT
           fi
-          echo "changed=true" >> $GITHUB_OUTPUT
 
       # --- Burwood 45 03 (CDSFA, O45 Div 3) ---
+      - name: Snapshot Burwood 45 03 (HEAD)
+        run: git show HEAD:burwood_45_03.ics > /tmp/old_burwood_45_03.ics 2>/dev/null || : > /tmp/old_burwood_45_03.ics
+
       - name: Generate Burwood 45 03
         run: |
           python3 dribl_to_ics.py \
@@ -53,19 +63,26 @@ jobs:
             --calname "Burwood FC 45 03 (O45 Div 3)" \
             --out burwood_45_03.ics
 
-      - name: Detect Burwood 45 03 changes
-        id: check_burwood_o45_div3
+      - name: Diff Burwood 45 03
+        id: diff_burwood_45_03
         run: |
-          if git show HEAD:burwood_45_03.ics 2>/dev/null | grep -v '^DTSTAMP' > /tmp/old.ics; then
-            grep -v '^DTSTAMP' burwood_45_03.ics > /tmp/new.ics
-            if diff -q /tmp/old.ics /tmp/new.ics > /dev/null; then
-              echo "changed=false" >> $GITHUB_OUTPUT
-              exit 0
-            fi
+          body=$(python3 diff_ics.py --old /tmp/old_burwood_45_03.ics --new burwood_45_03.ics)
+          if [ -z "$body" ]; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
+            delim=$(openssl rand -hex 12)
+            {
+              echo "body<<$delim"
+              echo "$body"
+              echo "$delim"
+            } >> $GITHUB_OUTPUT
           fi
-          echo "changed=true" >> $GITHUB_OUTPUT
 
       # --- Easts PISA (ESFA) ---
+      - name: Snapshot Easts PISA (HEAD)
+        run: git show HEAD:easts_pisa.ics > /tmp/old_easts_pisa.ics 2>/dev/null || : > /tmp/old_easts_pisa.ics
+
       - name: Generate Easts PISA
         run: |
           python3 dribl_to_ics.py \
@@ -76,21 +93,25 @@ jobs:
             --calname "Easts FC G09 Blue PISA" \
             --out easts_pisa.ics
 
-      - name: Detect Easts changes
-        id: check_easts
+      - name: Diff Easts PISA
+        id: diff_easts
         run: |
-          if git show HEAD:easts_pisa.ics 2>/dev/null | grep -v '^DTSTAMP' > /tmp/old.ics; then
-            grep -v '^DTSTAMP' easts_pisa.ics > /tmp/new.ics
-            if diff -q /tmp/old.ics /tmp/new.ics > /dev/null; then
-              echo "changed=false" >> $GITHUB_OUTPUT
-              exit 0
-            fi
+          body=$(python3 diff_ics.py --old /tmp/old_easts_pisa.ics --new easts_pisa.ics)
+          if [ -z "$body" ]; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
+            delim=$(openssl rand -hex 12)
+            {
+              echo "body<<$delim"
+              echo "$body"
+              echo "$delim"
+            } >> $GITHUB_OUTPUT
           fi
-          echo "changed=true" >> $GITHUB_OUTPUT
 
       # --- Commit + notify ---
       - name: Commit if anything changed
-        if: steps.check_burwood.outputs.changed == 'true' || steps.check_burwood_o45_div3.outputs.changed == 'true' || steps.check_easts.outputs.changed == 'true'
+        if: steps.diff_burwood.outputs.changed == 'true' || steps.diff_burwood_45_03.outputs.changed == 'true' || steps.diff_easts.outputs.changed == 'true'
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@users.noreply.github.com"
@@ -99,25 +120,34 @@ jobs:
           git push
 
       - name: Notify Burwood 45 05 subscribers
-        if: steps.check_burwood.outputs.changed == 'true'
+        if: steps.diff_burwood.outputs.changed == 'true'
+        env:
+          BODY: ${{ steps.diff_burwood.outputs.body }}
+          TOPIC: ${{ secrets.NTFY_TOPIC_BURWOOD }}
         run: |
           curl -H "Title: Burwood FC 45 05 fixtures updated" \
                -H "Tags: soccer" \
-               -d "Fixture list changed — check calendar" \
-               ntfy.sh/${{ secrets.NTFY_TOPIC_BURWOOD }}
+               --data-binary "$BODY" \
+               "ntfy.sh/$TOPIC"
 
       - name: Notify Burwood 45 03 subscribers
-        if: steps.check_burwood_o45_div3.outputs.changed == 'true'
+        if: steps.diff_burwood_45_03.outputs.changed == 'true'
+        env:
+          BODY: ${{ steps.diff_burwood_45_03.outputs.body }}
+          TOPIC: ${{ secrets.NTFY_TOPIC_BURWOOD_O45_DIV3 }}
         run: |
           curl -H "Title: Burwood FC 45 03 (O45 Div 3) fixtures updated" \
                -H "Tags: soccer" \
-               -d "Fixture list changed — check calendar" \
-               ntfy.sh/${{ secrets.NTFY_TOPIC_BURWOOD_O45_DIV3 }}
+               --data-binary "$BODY" \
+               "ntfy.sh/$TOPIC"
 
       - name: Notify Easts subscribers
-        if: steps.check_easts.outputs.changed == 'true'
+        if: steps.diff_easts.outputs.changed == 'true'
+        env:
+          BODY: ${{ steps.diff_easts.outputs.body }}
+          TOPIC: ${{ secrets.NTFY_TOPIC_EASTS }}
         run: |
           curl -H "Title: Easts FC G09 Blue PISA fixtures updated" \
                -H "Tags: soccer" \
-               -d "Fixture list changed — check calendar" \
-               ntfy.sh/${{ secrets.NTFY_TOPIC_EASTS }}
+               --data-binary "$BODY" \
+               "ntfy.sh/$TOPIC"
