@@ -17,8 +17,8 @@ jobs:
           python-version: '3.12'
       - run: pip install curl_cffi
 
-      # --- Burwood ---
-      - name: Generate Burwood
+      # --- Burwood 45 05 (CDSFA) ---
+      - name: Generate Burwood 45 05
         run: |
           python3 dribl_to_ics.py \
             --tenant JR1K3RNQ9M \
@@ -30,7 +30,7 @@ jobs:
             --calname "Burwood FC 45 05" \
             --out burwood.ics
 
-      - name: Detect Burwood changes
+      - name: Detect Burwood 45 05 changes
         id: check_burwood
         run: |
           if git show HEAD:burwood.ics 2>/dev/null | grep -v '^DTSTAMP' > /tmp/old.ics; then
@@ -42,7 +42,30 @@ jobs:
           fi
           echo "changed=true" >> $GITHUB_OUTPUT
 
-      # --- Easts ---
+      # --- Burwood 45 03 (CDSFA, O45 Div 3) ---
+      - name: Generate Burwood 45 03
+        run: |
+          python3 dribl_to_ics.py \
+            --tenant JR1K3RNQ9M \
+            --season k2KpooqNY5 \
+            --club 3yvdWENO05 \
+            --team jdylv4ZDK5 \
+            --calname "Burwood FC 45 03 (O45 Div 3)" \
+            --out burwood_45_03.ics
+
+      - name: Detect Burwood 45 03 changes
+        id: check_burwood_o45_div3
+        run: |
+          if git show HEAD:burwood_45_03.ics 2>/dev/null | grep -v '^DTSTAMP' > /tmp/old.ics; then
+            grep -v '^DTSTAMP' burwood_45_03.ics > /tmp/new.ics
+            if diff -q /tmp/old.ics /tmp/new.ics > /dev/null; then
+              echo "changed=false" >> $GITHUB_OUTPUT
+              exit 0
+            fi
+          fi
+          echo "changed=true" >> $GITHUB_OUTPUT
+
+      # --- Easts PISA (ESFA) ---
       - name: Generate Easts PISA
         run: |
           python3 dribl_to_ics.py \
@@ -67,21 +90,29 @@ jobs:
 
       # --- Commit + notify ---
       - name: Commit if anything changed
-        if: steps.check_burwood.outputs.changed == 'true' || steps.check_easts.outputs.changed == 'true'
+        if: steps.check_burwood.outputs.changed == 'true' || steps.check_burwood_o45_div3.outputs.changed == 'true' || steps.check_easts.outputs.changed == 'true'
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@users.noreply.github.com"
-          git add burwood.ics easts_pisa.ics
+          git add burwood.ics burwood_45_03.ics easts_pisa.ics
           git commit -m "Update fixtures $(date -u +%Y-%m-%d)"
           git push
 
-      - name: Notify Burwood subscribers
+      - name: Notify Burwood 45 05 subscribers
         if: steps.check_burwood.outputs.changed == 'true'
         run: |
           curl -H "Title: Burwood FC 45 05 fixtures updated" \
                -H "Tags: soccer" \
                -d "Fixture list changed — check calendar" \
                ntfy.sh/${{ secrets.NTFY_TOPIC_BURWOOD }}
+
+      - name: Notify Burwood 45 03 subscribers
+        if: steps.check_burwood_o45_div3.outputs.changed == 'true'
+        run: |
+          curl -H "Title: Burwood FC 45 03 (O45 Div 3) fixtures updated" \
+               -H "Tags: soccer" \
+               -d "Fixture list changed — check calendar" \
+               ntfy.sh/${{ secrets.NTFY_TOPIC_BURWOOD_O45_DIV3 }}
 
       - name: Notify Easts subscribers
         if: steps.check_easts.outputs.changed == 'true'
