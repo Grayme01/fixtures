@@ -38,11 +38,24 @@ jobs:
       - name: Diff Burwood 45 05
         id: diff_burwood
         run: |
-          body=$(python3 diff_ics.py --old /tmp/old_burwood.ics --new burwood.ics)
-          if [ -z "$body" ]; then
-            echo "changed=false" >> $GITHUB_OUTPUT
+          # Commit decision: any non-DTSTAMP difference
+          if [ -s /tmp/old_burwood.ics ]; then
+            grep -v '^DTSTAMP' /tmp/old_burwood.ics > /tmp/old_burwood_clean
+            grep -v '^DTSTAMP' burwood.ics > /tmp/new_burwood_clean
+            if diff -q /tmp/old_burwood_clean /tmp/new_burwood_clean > /dev/null; then
+              echo "changed=false" >> $GITHUB_OUTPUT
+            else
+              echo "changed=true" >> $GITHUB_OUTPUT
+            fi
           else
             echo "changed=true" >> $GITHUB_OUTPUT
+          fi
+          # Notify decision: semantic diff (time/ground/match/added/removed)
+          body=$(python3 diff_ics.py --old /tmp/old_burwood.ics --new burwood.ics)
+          if [ -z "$body" ]; then
+            echo "notify=false" >> $GITHUB_OUTPUT
+          else
+            echo "notify=true" >> $GITHUB_OUTPUT
             delim=$(openssl rand -hex 12)
             {
               echo "body<<$delim"
@@ -51,7 +64,7 @@ jobs:
             } >> $GITHUB_OUTPUT
           fi
 
-      # --- Burwood 45 03 (CDSFA, O45 Div 3) ---
+      # --- Burwood 45 03 ---
       - name: Snapshot Burwood 45 03 (HEAD)
         run: |
           git show HEAD:burwood_45_03.ics > /tmp/old_burwood_45_03.ics 2>/dev/null || : > /tmp/old_burwood_45_03.ics
@@ -70,11 +83,22 @@ jobs:
       - name: Diff Burwood 45 03
         id: diff_burwood_45_03
         run: |
-          body=$(python3 diff_ics.py --old /tmp/old_burwood_45_03.ics --new burwood_45_03.ics)
-          if [ -z "$body" ]; then
-            echo "changed=false" >> $GITHUB_OUTPUT
+          if [ -s /tmp/old_burwood_45_03.ics ]; then
+            grep -v '^DTSTAMP' /tmp/old_burwood_45_03.ics > /tmp/old_clean
+            grep -v '^DTSTAMP' burwood_45_03.ics > /tmp/new_clean
+            if diff -q /tmp/old_clean /tmp/new_clean > /dev/null; then
+              echo "changed=false" >> $GITHUB_OUTPUT
+            else
+              echo "changed=true" >> $GITHUB_OUTPUT
+            fi
           else
             echo "changed=true" >> $GITHUB_OUTPUT
+          fi
+          body=$(python3 diff_ics.py --old /tmp/old_burwood_45_03.ics --new burwood_45_03.ics)
+          if [ -z "$body" ]; then
+            echo "notify=false" >> $GITHUB_OUTPUT
+          else
+            echo "notify=true" >> $GITHUB_OUTPUT
             delim=$(openssl rand -hex 12)
             {
               echo "body<<$delim"
@@ -83,7 +107,7 @@ jobs:
             } >> $GITHUB_OUTPUT
           fi
 
-      # --- Easts PISA (ESFA) ---
+      # --- Easts PISA ---
       - name: Snapshot Easts PISA (HEAD)
         run: |
           git show HEAD:easts_pisa.ics > /tmp/old_easts_pisa.ics 2>/dev/null || : > /tmp/old_easts_pisa.ics
@@ -102,11 +126,22 @@ jobs:
       - name: Diff Easts PISA
         id: diff_easts
         run: |
-          body=$(python3 diff_ics.py --old /tmp/old_easts_pisa.ics --new easts_pisa.ics)
-          if [ -z "$body" ]; then
-            echo "changed=false" >> $GITHUB_OUTPUT
+          if [ -s /tmp/old_easts_pisa.ics ]; then
+            grep -v '^DTSTAMP' /tmp/old_easts_pisa.ics > /tmp/old_clean
+            grep -v '^DTSTAMP' easts_pisa.ics > /tmp/new_clean
+            if diff -q /tmp/old_clean /tmp/new_clean > /dev/null; then
+              echo "changed=false" >> $GITHUB_OUTPUT
+            else
+              echo "changed=true" >> $GITHUB_OUTPUT
+            fi
           else
             echo "changed=true" >> $GITHUB_OUTPUT
+          fi
+          body=$(python3 diff_ics.py --old /tmp/old_easts_pisa.ics --new easts_pisa.ics)
+          if [ -z "$body" ]; then
+            echo "notify=false" >> $GITHUB_OUTPUT
+          else
+            echo "notify=true" >> $GITHUB_OUTPUT
             delim=$(openssl rand -hex 12)
             {
               echo "body<<$delim"
@@ -116,7 +151,7 @@ jobs:
           fi
 
       # --- Commit + notify ---
-      - name: Commit if anything changed
+      - name: Commit if any team's .ics changed
         if: steps.diff_burwood.outputs.changed == 'true' || steps.diff_burwood_45_03.outputs.changed == 'true' || steps.diff_easts.outputs.changed == 'true'
         run: |
           git config user.name "github-actions"
@@ -126,7 +161,7 @@ jobs:
           git push
 
       - name: Notify Burwood 45 05 subscribers
-        if: steps.diff_burwood.outputs.changed == 'true'
+        if: steps.diff_burwood.outputs.notify == 'true'
         env:
           BODY: ${{ steps.diff_burwood.outputs.body }}
           TOPIC: ${{ secrets.NTFY_TOPIC_BURWOOD }}
@@ -137,7 +172,7 @@ jobs:
                "ntfy.sh/$TOPIC"
 
       - name: Notify Burwood 45 03 subscribers
-        if: steps.diff_burwood_45_03.outputs.changed == 'true'
+        if: steps.diff_burwood_45_03.outputs.notify == 'true'
         env:
           BODY: ${{ steps.diff_burwood_45_03.outputs.body }}
           TOPIC: ${{ secrets.NTFY_TOPIC_BURWOOD_O45_DIV3 }}
@@ -148,7 +183,7 @@ jobs:
                "ntfy.sh/$TOPIC"
 
       - name: Notify Easts subscribers
-        if: steps.diff_easts.outputs.changed == 'true'
+        if: steps.diff_easts.outputs.notify == 'true'
         env:
           BODY: ${{ steps.diff_easts.outputs.body }}
           TOPIC: ${{ secrets.NTFY_TOPIC_EASTS }}
