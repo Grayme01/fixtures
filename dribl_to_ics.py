@@ -107,7 +107,7 @@ def _fmt_utc(dt: datetime) -> str:
     return dt.astimezone(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
 
 
-def build_event(fixture: dict, team_hash: str | None, match_url_base: str | None = None) -> str | None:
+def build_event(fixture: dict, team_hash: str | None, match_url_base: str | None = None, home_prefix: str = "", away_prefix: str = "") -> str | None:
     """Convert one fixture object (JSON:API) into a VEVENT block."""
     attrs = fixture.get("attributes", {})
 
@@ -128,7 +128,13 @@ def build_event(fixture: dict, team_hash: str | None, match_url_base: str | None
 
     home = attrs.get("home_team_name", "Home")
     away = attrs.get("away_team_name", "Away")
-    summary = f"{home} v {away}"
+    prefix = ""
+    if team_hash:
+        if attrs.get("home_team_hash_id") == team_hash:
+            prefix = home_prefix
+        elif attrs.get("away_team_hash_id") == team_hash:
+            prefix = away_prefix
+    summary = f"{prefix}{home} v {away}"
 
     location_parts = [
         attrs.get("ground_name"),
@@ -180,8 +186,8 @@ def build_event(fixture: dict, team_hash: str | None, match_url_base: str | None
     return "\r\n".join(lines)
 
 
-def build_calendar(fixtures: list[dict], team_hash: str | None, calname: str, match_url_base: str | None = None) -> tuple[str, int]:
-    events = [e for e in (build_event(f, team_hash, match_url_base) for f in fixtures) if e]
+def build_calendar(fixtures: list[dict], team_hash: str | None, calname: str, match_url_base: str | None = None, home_prefix: str = "", away_prefix: str = "") -> tuple[str, int]:
+    events = [e for e in (build_event(f, team_hash, match_url_base, home_prefix, away_prefix) for f in fixtures) if e]
     header = [
         "BEGIN:VCALENDAR",
         "VERSION:2.0",
@@ -205,6 +211,10 @@ def main() -> int:
     parser.add_argument("--calname", required=True, help="X-WR-CALNAME (display name in calendar apps)")
     parser.add_argument("--match-url-base", default=None,
                         help='URL prefix per match (match_hash_id is appended). E.g. https://cdsfa.dribl.com/matchcentre?m=')
+    parser.add_argument("--home-prefix", default="",
+                        help='Prepended to event title when --team is home (listed first). E.g. "[BLUE] "')
+    parser.add_argument("--away-prefix", default="",
+                        help='Prepended to event title when --team is away (listed second). E.g. "[WHITE] "')
     parser.add_argument("--out", type=Path, required=True, help="output .ics path")
     parser.add_argument("--inspect", action="store_true", help="print raw API payload (truncated) and exit")
     args = parser.parse_args()
@@ -220,7 +230,7 @@ def main() -> int:
         print("No fixtures returned.", file=sys.stderr)
         return 1
 
-    ics, n_events = build_calendar(fixtures, args.team, args.calname, args.match_url_base)
+    ics, n_events = build_calendar(fixtures, args.team, args.calname, args.match_url_base, args.home_prefix, args.away_prefix)
     args.out.write_text(ics, encoding="utf-8")
     print(f"Wrote {n_events} event(s) (from {len(fixtures)} fixtures in response) to {args.out}")
     return 0
