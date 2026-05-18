@@ -19,7 +19,8 @@ jobs:
 
       # --- Burwood 45 05 (CDSFA) ---
       - name: Snapshot Burwood 45 05 (HEAD)
-        run: git show HEAD:burwood.ics > /tmp/old_burwood.ics 2>/dev/null || : > /tmp/old_burwood.ics
+        run: |
+          git show HEAD:burwood.ics > /tmp/old_burwood.ics 2>/dev/null || : > /tmp/old_burwood.ics
 
       - name: Generate Burwood 45 05
         run: |
@@ -51,7 +52,8 @@ jobs:
 
       # --- Burwood 45 03 (CDSFA, O45 Div 3) ---
       - name: Snapshot Burwood 45 03 (HEAD)
-        run: git show HEAD:burwood_45_03.ics > /tmp/old_burwood_45_03.ics 2>/dev/null || : > /tmp/old_burwood_45_03.ics
+        run: |
+          git show HEAD:burwood_45_03.ics > /tmp/old_burwood_45_03.ics 2>/dev/null || : > /tmp/old_burwood_45_03.ics
 
       - name: Generate Burwood 45 03
         run: |
@@ -81,7 +83,8 @@ jobs:
 
       # --- Easts PISA (ESFA) ---
       - name: Snapshot Easts PISA (HEAD)
-        run: git show HEAD:easts_pisa.ics > /tmp/old_easts_pisa.ics 2>/dev/null || : > /tmp/old_easts_pisa.ics
+        run: |
+          git show HEAD:easts_pisa.ics > /tmp/old_easts_pisa.ics 2>/dev/null || : > /tmp/old_easts_pisa.ics
 
       - name: Generate Easts PISA
         run: |
