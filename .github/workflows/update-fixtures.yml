@@ -121,8 +121,8 @@ jobs:
             --team pN69xRgBm0 \
             --calname "Easts FC G09 Blue PISA" \
             --match-url-base "https://esfa.dribl.com/matchcentre?m=" \
-            --home-prefix "[BLUE] " \
-            --away-prefix "[WHITE] " \
+            --home-prefix "🔵👕 " \
+            --away-prefix "⚪👕 " \
             --out easts_pisa.ics
 
       - name: Diff Easts PISA
