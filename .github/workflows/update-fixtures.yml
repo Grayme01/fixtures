@@ -2,7 +2,11 @@ name: Update fixtures
 
 on:
   schedule:
-    - cron: '0 19 * * *'   # ~6am Sydney
+    # Times are UTC. Sydney is UTC+10 (AEST, winter) / UTC+11 (AEDT, summer).
+    # Tuned to AEST since the soccer season runs through winter;
+    # during AEDT (~Oct–Apr) these fire 1h later than the labels say.
+    - cron: '0 0 * * 1-5'    # Mon–Fri 10:00 AEST (00:00 UTC)
+    - cron: '0 22 * * 5,6'   # Sat–Sun 08:00 AEST (22:00 UTC Fri–Sat)
   workflow_dispatch:
 
 jobs:
