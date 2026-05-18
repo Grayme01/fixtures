@@ -7,162 +7,178 @@ X-WR-CALNAME:Burwood FC 45 05
 X-WR-TIMEZONE:Australia/Sydney
 BEGIN:VEVENT
 UID:EN2p5Q1zrd@dribl
-DTSTAMP:20260518T004522Z
+DTSTAMP:20260518T012600Z
 DTSTART:20260421T090000Z
 DTEND:20260421T103000Z
 SUMMARY:Enfield 45 05 v Burwood Football Club 45 05
 LOCATION:Henley Park\, Field 1\, Portland Street\, ENFIELD Burwood
-DESCRIPTION:League: 45 05 Male\nRound: Round 1\nCompetition: Home and Away
+DESCRIPTION:League: 45 05 Male\nRound: Round 1\nCompetition: Home and Away\nhttps://cdsfa.dribl.com/matchcentre?m=BdDb0n38wN
 GEO:-33.893114;151.096682
+URL:https://cdsfa.dribl.com/matchcentre?m=BdDb0n38wN
 END:VEVENT
 BEGIN:VEVENT
 UID:JmXWlrDQDd@dribl
-DTSTAMP:20260518T004522Z
+DTSTAMP:20260518T012600Z
 DTSTART:20260425T050000Z
 DTEND:20260425T063000Z
 SUMMARY:Balmain DFC 45 05 B v Burwood Football Club 45 05
 LOCATION:Waterfront Drive\, Field 2 (Callan)
-DESCRIPTION:League: 45 05 Male\nRound: Round 3\nCompetition: Home and Away
+DESCRIPTION:League: 45 05 Male\nRound: Round 3\nCompetition: Home and Away\nhttps://cdsfa.dribl.com/matchcentre?m=Wdgq9EEkxN
 GEO:-33.864417;151.159633
+URL:https://cdsfa.dribl.com/matchcentre?m=Wdgq9EEkxN
 END:VEVENT
 BEGIN:VEVENT
 UID:JmXWlrDbld@dribl
-DTSTAMP:20260518T004522Z
+DTSTAMP:20260518T012600Z
 DTSTART:20260502T023000Z
 DTEND:20260502T040000Z
 SUMMARY:Marrickville 45 05 v Burwood Football Club 45 05
 LOCATION:Tempe Reserve\, 3 (all-weather)
-DESCRIPTION:League: 45 05 Male\nRound: Round 4\nCompetition: Home and Away
+DESCRIPTION:League: 45 05 Male\nRound: Round 4\nCompetition: Home and Away\nhttps://cdsfa.dribl.com/matchcentre?m=ZKRyDAAZoN
 GEO:-33.927651;151.161645
+URL:https://cdsfa.dribl.com/matchcentre?m=ZKRyDAAZoN
 END:VEVENT
 BEGIN:VEVENT
 UID:ZNQOGArxMd@dribl
-DTSTAMP:20260518T004522Z
+DTSTAMP:20260518T012600Z
 DTSTART:20260509T030000Z
 DTEND:20260509T043000Z
 SUMMARY:Burwood Football Club 45 05 v Balmain DFC 45 05 A
 LOCATION:Centenary Park\, Field 1 (East)
-DESCRIPTION:League: 45 05 Male\nRound: Round 5\nCompetition: Home and Away
+DESCRIPTION:League: 45 05 Male\nRound: Round 5\nCompetition: Home and Away\nhttps://cdsfa.dribl.com/matchcentre?m=ydoR7aarLK
 GEO:-33.876236;151.119739
+URL:https://cdsfa.dribl.com/matchcentre?m=ydoR7aarLK
 END:VEVENT
 BEGIN:VEVENT
 UID:Rdk2zaj6AK@dribl
-DTSTAMP:20260518T004522Z
+DTSTAMP:20260518T012600Z
 DTSTART:20260516T044500Z
 DTEND:20260516T061500Z
 SUMMARY:Hurlstone Park 45 05 v Burwood Football Club 45 05
 LOCATION:Ewen Park\, Field 1
-DESCRIPTION:League: 45 05 Male\nRound: Round 6\nCompetition: Home and Away
+DESCRIPTION:League: 45 05 Male\nRound: Round 6\nCompetition: Home and Away\nhttps://cdsfa.dribl.com/matchcentre?m=JmXWlrrYWd
 GEO:-33.914304;151.132607
+URL:https://cdsfa.dribl.com/matchcentre?m=JmXWlrrYWd
 END:VEVENT
 BEGIN:VEVENT
 UID:yKJJWA61AK@dribl
-DTSTAMP:20260518T004522Z
+DTSTAMP:20260518T012600Z
 DTSTART:20260523T050000Z
 DTEND:20260523T063000Z
 SUMMARY:Burwood Football Club 45 05 v Abbotsford Juniors 45 05
 LOCATION:Centenary Park\, Field 2 (West)
-DESCRIPTION:League: 45 05 Male\nRound: Round 7\nCompetition: Home and Away
+DESCRIPTION:League: 45 05 Male\nRound: Round 7\nCompetition: Home and Away\nhttps://cdsfa.dribl.com/matchcentre?m=JmXWlrrMkd
 GEO:-33.876236;151.119739
+URL:https://cdsfa.dribl.com/matchcentre?m=JmXWlrrMkd
 END:VEVENT
 BEGIN:VEVENT
 UID:ld456bqeOm@dribl
-DTSTAMP:20260518T004522Z
+DTSTAMP:20260518T012600Z
 DTSTART:20260530T030000Z
 DTEND:20260530T043000Z
 SUMMARY:Leichhardt Saints 45 05 v Burwood Football Club 45 05
 LOCATION:Balmain Road Sporting Ground\, Field 1
-DESCRIPTION:League: 45 05 Male\nRound: Round 8\nCompetition: Home and Away
+DESCRIPTION:League: 45 05 Male\nRound: Round 8\nCompetition: Home and Away\nhttps://cdsfa.dribl.com/matchcentre?m=nmYnO880aN
 GEO:-33.867737;151.163638
+URL:https://cdsfa.dribl.com/matchcentre?m=nmYnO880aN
 END:VEVENT
 BEGIN:VEVENT
 UID:emAnZV5gMN@dribl
-DTSTAMP:20260518T004522Z
+DTSTAMP:20260518T012600Z
 DTSTART:20260606T030000Z
 DTEND:20260606T043000Z
 SUMMARY:Burwood Football Club 45 05 v Earlwood Wanderers FC 45 05
 LOCATION:Centenary Park\, Field 2 (West)
-DESCRIPTION:League: 45 05 Male\nRound: Round 9\nCompetition: Home and Away
+DESCRIPTION:League: 45 05 Male\nRound: Round 9\nCompetition: Home and Away\nhttps://cdsfa.dribl.com/matchcentre?m=pN6RELLxpN
 GEO:-33.876236;151.119739
+URL:https://cdsfa.dribl.com/matchcentre?m=pN6RELLxpN
 END:VEVENT
 BEGIN:VEVENT
 UID:OmepLMWOed@dribl
-DTSTAMP:20260518T004522Z
+DTSTAMP:20260518T012600Z
 DTSTART:20260613T050000Z
 DTEND:20260613T063000Z
 SUMMARY:Burwood Football Club 45 05 v Enfield 45 05
 LOCATION:Centenary Park\, Field 1 (East)
-DESCRIPTION:League: 45 05 Male\nRound: Round 10\nCompetition: Home and Away
+DESCRIPTION:League: 45 05 Male\nRound: Round 10\nCompetition: Home and Away\nhttps://cdsfa.dribl.com/matchcentre?m=1K3pr22z9d
 GEO:-33.876236;151.119739
+URL:https://cdsfa.dribl.com/matchcentre?m=1K3pr22z9d
 END:VEVENT
 BEGIN:VEVENT
 UID:1K3prj5AOd@dribl
-DTSTAMP:20260518T004522Z
+DTSTAMP:20260518T012600Z
 DTSTART:20260627T030000Z
 DTEND:20260627T043000Z
 SUMMARY:Burwood Football Club 45 05 v Balmain DFC 45 05 B
 LOCATION:Centenary Park\, Field 1 (East)
-DESCRIPTION:League: 45 05 Male\nRound: Round 12\nCompetition: Home and Away
+DESCRIPTION:League: 45 05 Male\nRound: Round 12\nCompetition: Home and Away\nhttps://cdsfa.dribl.com/matchcentre?m=lNbJlMMYAN
 GEO:-33.876236;151.119739
+URL:https://cdsfa.dribl.com/matchcentre?m=lNbJlMMYAN
 END:VEVENT
 BEGIN:VEVENT
 UID:lNbJlbZqwN@dribl
-DTSTAMP:20260518T004522Z
+DTSTAMP:20260518T012600Z
 DTSTART:20260704T030000Z
 DTEND:20260704T043000Z
 SUMMARY:Burwood Football Club 45 05 v Marrickville 45 05
 LOCATION:Centenary Park\, Field 1 (East)
-DESCRIPTION:League: 45 05 Male\nRound: Round 13\nCompetition: Home and Away
+DESCRIPTION:League: 45 05 Male\nRound: Round 13\nCompetition: Home and Away\nhttps://cdsfa.dribl.com/matchcentre?m=emAnZAAQ8N
 GEO:-33.876236;151.119739
+URL:https://cdsfa.dribl.com/matchcentre?m=emAnZAAQ8N
 END:VEVENT
 BEGIN:VEVENT
 UID:OmepLMWVyd@dribl
-DTSTAMP:20260518T004522Z
+DTSTAMP:20260518T012600Z
 DTSTART:20260711T050000Z
 DTEND:20260711T063000Z
 SUMMARY:Balmain DFC 45 05 A v Burwood Football Club 45 05
 LOCATION:Centenary Park\, Field 2 (West)
-DESCRIPTION:League: 45 05 Male\nRound: Round 14\nCompetition: Home and Away
+DESCRIPTION:League: 45 05 Male\nRound: Round 14\nCompetition: Home and Away\nhttps://cdsfa.dribl.com/matchcentre?m=1K3pr22x7d
 GEO:-33.876236;151.119739
+URL:https://cdsfa.dribl.com/matchcentre?m=1K3pr22x7d
 END:VEVENT
 BEGIN:VEVENT
 UID:1K3prj5Lqd@dribl
-DTSTAMP:20260518T004522Z
+DTSTAMP:20260518T012600Z
 DTSTART:20260718T030000Z
 DTEND:20260718T043000Z
 SUMMARY:Burwood Football Club 45 05 v Hurlstone Park 45 05
 LOCATION:Centenary Park\, Field 1 (East)
-DESCRIPTION:League: 45 05 Male\nRound: Round 15\nCompetition: Home and Away
+DESCRIPTION:League: 45 05 Male\nRound: Round 15\nCompetition: Home and Away\nhttps://cdsfa.dribl.com/matchcentre?m=1K3pr22God
 GEO:-33.876236;151.119739
+URL:https://cdsfa.dribl.com/matchcentre?m=1K3pr22God
 END:VEVENT
 BEGIN:VEVENT
 UID:ld456bWkem@dribl
-DTSTAMP:20260518T004522Z
+DTSTAMP:20260518T012600Z
 DTSTART:20260725T030000Z
 DTEND:20260725T043000Z
 SUMMARY:Abbotsford Juniors 45 05 v Burwood Football Club 45 05
 LOCATION:Campbell Park\, Field 2
-DESCRIPTION:League: 45 05 Male\nRound: Round 16\nCompetition: Home and Away
+DESCRIPTION:League: 45 05 Male\nRound: Round 16\nCompetition: Home and Away\nhttps://cdsfa.dribl.com/matchcentre?m=nmYnO88vbN
 GEO:-33.852067;151.13847
+URL:https://cdsfa.dribl.com/matchcentre?m=nmYnO88vbN
 END:VEVENT
 BEGIN:VEVENT
 UID:yKJJWjpyrK@dribl
-DTSTAMP:20260518T004522Z
+DTSTAMP:20260518T012600Z
 DTSTART:20260801T030000Z
 DTEND:20260801T043000Z
 SUMMARY:Burwood Football Club 45 05 v Leichhardt Saints 45 05
 LOCATION:Centenary Park\, Field 1 (East)
-DESCRIPTION:League: 45 05 Male\nRound: Round 17\nCompetition: Home and Away
+DESCRIPTION:League: 45 05 Male\nRound: Round 17\nCompetition: Home and Away\nhttps://cdsfa.dribl.com/matchcentre?m=ZNQOGAAqWd
 GEO:-33.876236;151.119739
+URL:https://cdsfa.dribl.com/matchcentre?m=ZNQOGAAqWd
 END:VEVENT
 BEGIN:VEVENT
 UID:RNEgZ0JgMd@dribl
-DTSTAMP:20260518T004522Z
+DTSTAMP:20260518T012600Z
 DTSTART:20260808T023000Z
 DTEND:20260808T040000Z
 SUMMARY:Earlwood Wanderers FC 45 05 v Burwood Football Club 45 05
 LOCATION:Earlwood Oval\, Field 1
-DESCRIPTION:League: 45 05 Male\nRound: Round 18\nCompetition: Home and Away
+DESCRIPTION:League: 45 05 Male\nRound: Round 18\nCompetition: Home and Away\nhttps://cdsfa.dribl.com/matchcentre?m=xm8Z2zz5zK
 GEO:-33.924456;151.12008
+URL:https://cdsfa.dribl.com/matchcentre?m=xm8Z2zz5zK
 END:VEVENT
 END:VCALENDAR
