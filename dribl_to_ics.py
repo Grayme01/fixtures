@@ -136,6 +136,12 @@ def build_event(fixture: dict, team_hash: str | None, match_url_base: str | None
             prefix = away_prefix
     summary = f"{prefix}{home} v {away}"
 
+    # Append the result once a game has been played (scores are null until then).
+    home_score = attrs.get("home_score")
+    away_score = attrs.get("away_score")
+    if home_score is not None and away_score is not None:
+        summary = f"{summary} ({home_score}-{away_score})"
+
     location_parts = [
         attrs.get("ground_name"),
         attrs.get("field_name"),
