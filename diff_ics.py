@@ -48,6 +48,16 @@ def _ics_unescape(text: str) -> str:
     )
 
 
+def _is_past(value: str, now: datetime) -> bool:
+    """True if an ICS UTC timestamp is before `now`. Unparseable -> treated as
+    not past, so we never silently drop a change we couldn't date."""
+    try:
+        dt = datetime.strptime(value, "%Y%m%dT%H%M%SZ").replace(tzinfo=timezone.utc)
+    except (ValueError, TypeError):
+        return False
+    return dt < now
+
+
 def _fmt_dt(value: str) -> str:
     """Convert an ICS UTC timestamp (20260523T050000Z) to a short Sydney string."""
     try:
@@ -83,17 +93,28 @@ def diff(old: dict[str, dict[str, str]], new: dict[str, dict[str, str]]) -> str:
     removed_uids = old_uids - new_uids
     common_uids = old_uids & new_uids
 
+    now = datetime.now(timezone.utc)
     lines: list[str] = []
 
+    # Added: skip if the new fixture is already in the past.
     for uid in sorted(added_uids, key=lambda u: new[u].get("DTSTART", "")):
+        if _is_past(new[uid].get("DTSTART", ""), now):
+            continue
         lines.append(f"+ {_describe(new[uid])}")
 
+    # Removed: skip if the cancelled fixture was already in the past.
     for uid in sorted(removed_uids, key=lambda u: old[u].get("DTSTART", "")):
+        if _is_past(old[uid].get("DTSTART", ""), now):
+            continue
         lines.append(f"- {_describe(old[uid])}")
 
     for uid in sorted(common_uids, key=lambda u: new[u].get("DTSTART", "")):
         old_ev = old[uid]
         new_ev = new[uid]
+        # Skip changes to a fixture that is in the past on both old and new
+        # dates — an already-played game is not actionable for subscribers.
+        if _is_past(old_ev.get("DTSTART", ""), now) and _is_past(new_ev.get("DTSTART", ""), now):
+            continue
         changes: list[str] = []
         # Time change
         if old_ev.get("DTSTART") != new_ev.get("DTSTART"):
