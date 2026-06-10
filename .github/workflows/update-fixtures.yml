@@ -5,8 +5,8 @@ on:
     # Times are UTC. Sydney is UTC+10 (AEST, winter) / UTC+11 (AEDT, summer).
     # Tuned to AEST since the soccer season runs through winter;
     # during AEDT (~Oct–Apr) these fire 1h later than the labels say.
-    - cron: '0 0 * * 1-5'    # Mon–Fri 10:00 AEST (00:00 UTC)
-    - cron: '0 22 * * 5,6'   # Sat–Sun 08:00 AEST (22:00 UTC Fri–Sat)
+    - cron: '13 0 * * 1-5'    # Mon–Fri ~10:13 AEST (00:13 UTC) — minute offset reduces top-of-hour queue drift
+    - cron: '13 22 * * 5,6'   # Sat–Sun ~08:13 AEST (22:13 UTC Fri–Sat)
   workflow_dispatch:
 
 jobs:
@@ -15,10 +15,11 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: '3.12'
+          cache: pip
       - run: pip install curl_cffi
 
       # --- Burwood 45 05 (CDSFA) ---
