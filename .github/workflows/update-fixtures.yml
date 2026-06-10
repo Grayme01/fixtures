@@ -16,6 +16,8 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v5
+        with:
+          fetch-depth: 50   # enough for a 7-day commit lookback (heartbeat step)
       - uses: actions/setup-python@v6
         with:
           python-version: '3.12'
@@ -199,3 +201,29 @@ jobs:
                -H "Tags: soccer" \
                --data-binary "$BODY" \
                "ntfy.sh/$TOPIC"
+
+      # --- Weekly heartbeat ---
+      # Fires only on scheduled Thursday runs, and only if no auto-commits
+      # have landed in the past 7 days. Sends to a dedicated topic so other
+      # team subscribers don't see the weekly noise.
+      - name: Weekly heartbeat (Thursday, quiet week)
+        if: github.event_name == 'schedule'
+        env:
+          TOPIC: ${{ secrets.NTFY_TOPIC_HEARTBEAT }}
+        run: |
+          if [ "$(date -u +%u)" != "4" ]; then
+            echo "Not Thursday (UTC) — skipping heartbeat."
+            exit 0
+          fi
+          count=$(git log --since="7 days ago" --author="github-actions" --oneline | wc -l)
+          echo "Auto-commits in last 7 days: $count"
+          if [ "$count" -gt 0 ]; then
+            echo "Updates happened this week; no heartbeat needed."
+            exit 0
+          fi
+          last_run_utc=$(date -u +"%Y-%m-%d %H:%M UTC")
+          curl -H "Title: Fixtures system: weekly check-in" \
+               -H "Tags: heartbeat,white_check_mark" \
+               -d "All quiet. The daily check ran today and there have been no fixture changes for any of the three teams in the past 7 days. Last run: $last_run_utc." \
+               "ntfy.sh/$TOPIC"
+
