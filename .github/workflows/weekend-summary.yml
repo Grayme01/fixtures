@@ -1,0 +1,65 @@
+name: Weekend summary
+
+# Friday-afternoon "this weekend" digest for Burwood 45 05 + Easts, with each
+# ground's wet-weather field status (pushed into this repo by the
+# football-ground-scraper project as field_status.json). Sends to Graeme only.
+on:
+  schedule:
+    # 06:23 UTC Fri = ~16:23 AEST — ~20min after the scraper's 4pm field-status
+    # push, so we read same-day statuses. (During AEDT this is 17:23; season is winter.)
+    - cron: '23 6 * * 5'
+  workflow_dispatch:
+
+jobs:
+  summary:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5          # includes field_status.json if the scraper has pushed one
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+          cache: pip
+      - run: pip install curl_cffi
+
+      # Regenerate fresh fixtures; fall back to the committed .ics if Dribl is down,
+      # so a fetch outage still yields a summary rather than a silent no-send.
+      - name: Generate Burwood 45 05 (fresh)
+        run: |
+          python3 dribl_to_ics.py \
+            --tenant JR1K3RNQ9M --season k2KpooqNY5 --club 3yvdWENO05 \
+            --competition R1K3BBXLNQ --league BdDDYpGwdb --team am1QPnXjmw \
+            --calname "Burwood FC 45 05" \
+            --match-url-base "https://cdsfa.dribl.com/matchcentre?m=" \
+            --out /tmp/burwood.ics || cp burwood.ics /tmp/burwood.ics
+
+      - name: Generate Easts PISA (fresh)
+        run: |
+          python3 dribl_to_ics.py \
+            --tenant GwxNxOmkpO --season 3pmvLyLKvJ --club 8nm7P0kNOq --team pN69xRgBm0 \
+            --calname "Easts FC G09 Blue PISA" \
+            --match-url-base "https://esfa.dribl.com/matchcentre?m=" \
+            --home-prefix "🔵 " --away-prefix "⚪ " \
+            --out /tmp/easts_pisa.ics || cp easts_pisa.ics /tmp/easts_pisa.ics
+
+      - name: Build weekend summary
+        id: summary
+        run: |
+          body=$(python3 weekend_summary.py --status field_status.json \
+            --team "Burwood FC 45 05=/tmp/burwood.ics" \
+            --team "Easts FC G09 Blue PISA=/tmp/easts_pisa.ics")
+          delim=$(openssl rand -hex 12)
+          {
+            echo "body<<$delim"
+            echo "$body"
+            echo "$delim"
+          } >> $GITHUB_OUTPUT
+
+      - name: Notify Graeme
+        env:
+          BODY: ${{ steps.summary.outputs.body }}
+          TOPIC: ${{ secrets.NTFY_TOPIC_WEEKEND }}
+        run: |
+          curl -H "Title: ⚽ This weekend's fixtures + field status" \
+               -H "Tags: soccer,calendar" \
+               --data-binary "$BODY" \
+               "ntfy.sh/$TOPIC"
