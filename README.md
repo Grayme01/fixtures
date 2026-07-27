@@ -90,4 +90,5 @@ python3 dribl_to_ics.py \
   --out burwood.ics
 ```
 
-`curl_cffi` is needed because dribl's WAF blocks plain `requests`; `impersonate="chrome"` makes the TLS handshake pass.
+`curl_cffi` is needed because dribl's WAF blocks plain `requests`; `impersonate="chrome"` makes the TLS handshake pass. 
+test
