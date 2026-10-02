@@ -19,7 +19,6 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          # Deliberately not weekend-summary.yml, which is disabled on purpose.
           for wf in update-fixtures.yml keepalive.yml; do
             gh api -X PUT "repos/${{ github.repository }}/actions/workflows/$wf/enable"
             echo "Re-enabled $wf"
