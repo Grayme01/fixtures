@@ -26,12 +26,14 @@ import sys
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
-from urllib.parse import urlencode
+from urllib.parse import urlencode, urlsplit
 from zoneinfo import ZoneInfo
 
 from curl_cffi import requests
 
 API_BASE = "https://mc-api.dribl.com/api/fixtures"
+SEASON_API = "https://mc-api.dribl.com/api/seasons"
+DEFAULT_ORIGIN = "https://cdsfa.dribl.com"
 TZ = ZoneInfo("Australia/Sydney")
 DEFAULT_DURATION_MIN = 90
 
@@ -52,23 +54,43 @@ def build_api_url(tenant: str, season: str, club: str | None = None, competition
     return f"{API_BASE}?{urlencode(params)}"
 
 
-def fetch_fixtures(url: str, max_pages: int = 50) -> list[dict]:
-    """Fetch all fixtures, following cursor-based pagination.
+def origin_from(match_url_base: str | None) -> str:
+    """Browser Origin for the association's match centre, e.g.
+    https://marrickvillefc.dribl.com/matchcentre?m= -> https://marrickvillefc.dribl.com"""
+    if not match_url_base:
+        return DEFAULT_ORIGIN
+    parts = urlsplit(match_url_base)
+    return f"{parts.scheme}://{parts.netloc}"
 
-    Dribl caps per_page at 30. Caller passes the base URL; this function
-    appends `cursor` query params and accumulates pages until exhausted.
-    """
-    headers = {
+
+def _headers(origin: str) -> dict[str, str]:
+    return {
         "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36",
         "Accept": "application/json",
         "Accept-Language": "en-GB,en-US;q=0.9,en;q=0.8",
-        "Origin": "https://cdsfa.dribl.com",
-        "Referer": "https://cdsfa.dribl.com/",
+        "Origin": origin,
+        "Referer": f"{origin}/",
         "X-Requested-With": "XMLHttpRequest",
         "Sec-Fetch-Dest": "empty",
         "Sec-Fetch-Mode": "cors",
         "Sec-Fetch-Site": "same-site",
     }
+
+
+def fetch_season(tenant: str, season: str, origin: str = DEFAULT_ORIGIN) -> dict:
+    """Season attributes, including `is_current`."""
+    r = requests.get(f"{SEASON_API}/{season}?{urlencode({'tenant': tenant})}", headers=_headers(origin), timeout=30, impersonate="chrome")
+    r.raise_for_status()
+    return r.json()["data"]
+
+
+def fetch_fixtures(url: str, max_pages: int = 50, origin: str = DEFAULT_ORIGIN) -> list[dict]:
+    """Fetch all fixtures, following cursor-based pagination.
+
+    Dribl caps per_page at 30. Caller passes the base URL; this function
+    appends `cursor` query params and accumulates pages until exhausted.
+    """
+    headers = _headers(origin)
     sep = "&" if "?" in url else "?"
     all_fixtures: list[dict] = []
     cursor: str | None = None
@@ -235,7 +257,7 @@ def main() -> int:
     args = parser.parse_args()
 
     url = build_api_url(args.tenant, args.season, args.club, args.competition, args.league)
-    fixtures = fetch_fixtures(url)
+    fixtures = fetch_fixtures(url, origin=origin_from(args.match_url_base))
 
     if args.inspect:
         print(json.dumps(fixtures, indent=2)[:4000])

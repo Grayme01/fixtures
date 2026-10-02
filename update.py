@@ -1,8 +1,10 @@
 """
 Regenerate every active team's .ics from teams.toml, commit any changes, and
-send per-team ntfy notifications.
+send per-team ntfy notifications. Also warns on the heartbeat topic when an
+active team looks finished (no future fixtures, or its season is no longer
+current), as a prompt to archive it or roll it to the new season.
 
-Usage (CI):     NTFY_TOPIC_<TEAM>=<topic> ... python3 update.py
+Usage (CI):     NTFY_TOPIC_HEARTBEAT=<topic> NTFY_TOPIC_<TEAM>=<topic> ... python3 update.py
 Usage (local):  python3 update.py --dry-run   # no secrets, commit or notify
 """
 
@@ -19,11 +21,12 @@ from typing import Any
 
 from curl_cffi import requests
 
-from diff_ics import summarise
-from dribl_to_ics import DEFAULT_DURATION_MIN, build_api_url, build_calendar, fetch_fixtures
+from diff_ics import parse_ics, summarise
+from dribl_to_ics import DEFAULT_DURATION_MIN, build_api_url, build_calendar, fetch_fixtures, fetch_season, origin_from
 
 ROOT = Path(__file__).resolve().parent
 NTFY_URL = "https://ntfy.sh"
+HEARTBEAT_SECRET = "NTFY_TOPIC_HEARTBEAT"
 
 
 def load_teams(path: Path) -> list[dict[str, Any]]:
@@ -34,7 +37,8 @@ def load_teams(path: Path) -> list[dict[str, Any]]:
 def load_secrets(active: list[dict[str, Any]]) -> dict[str, str]:
     """Fail before any fetching if an active team's ntfy topic is unset; an
     empty topic would otherwise only surface when a notification is due."""
-    secrets = {t["ntfy_secret"]: os.environ.get(t["ntfy_secret"], "") for t in active}
+    names = [HEARTBEAT_SECRET] + [t["ntfy_secret"] for t in active]
+    secrets = {name: os.environ.get(name, "") for name in names}
     missing = [name for name, value in secrets.items() if not value]
     if missing:
         for name in missing:
@@ -50,7 +54,7 @@ def _strip_dtstamp(text: str) -> list[str]:
 
 def generate(team: dict[str, Any]) -> str:
     url = build_api_url(team["tenant"], team["season"], team.get("club"), team.get("competition"), team.get("league"))
-    fixtures = fetch_fixtures(url)
+    fixtures = fetch_fixtures(url, origin=origin_from(team.get("match_url_base")))
     if not fixtures:
         raise RuntimeError(f"{team['name']}: no fixtures returned")
     ics, n_events = build_calendar(
@@ -67,10 +71,31 @@ def generate(team: dict[str, Any]) -> str:
     return ics
 
 
-def notify(topic: str, title: str, body: str) -> None:
+def health_warnings(team: dict[str, Any], ics: str, now: datetime) -> list[str]:
+    warnings = []
+    starts = [ev.get("DTSTART", "") for ev in parse_ics(ics).values()]
+    # ICS UTC stamps (20261008T090000Z) sort chronologically as strings.
+    if not any(s > f"{now:%Y%m%dT%H%M%SZ}" for s in starts):
+        warnings.append(f"{team['name']}: no future fixtures left")
+    try:
+        if not fetch_season(team["tenant"], team["season"], origin_from(team.get("match_url_base")))["is_current"]:
+            warnings.append(f"{team['name']}: season {team['season']} is no longer the current Dribl season")
+    except Exception as exc:  # a health check shouldn't fail the run
+        print(f"::warning::{team['name']}: season check failed: {exc}", file=sys.stderr)
+    return warnings
+
+
+def alert_due(now: datetime) -> bool:
+    """Send health warnings on manual runs and on Thursday (UTC) scheduled
+    runs, matching the heartbeat, so a finished season nags weekly, not daily."""
+    event = os.environ.get("GITHUB_EVENT_NAME", "")
+    return event == "workflow_dispatch" or (event == "schedule" and now.isoweekday() == 4)
+
+
+def notify(topic: str, title: str, body: str, tags: list[str] | None = None) -> None:
     # JSON publishing keeps UTF-8 titles intact (HTTP headers are Latin-1),
     # and raise_for_status() catches the ntfy 4xx that plain curl ignores.
-    r = requests.post(NTFY_URL, json={"topic": topic, "title": title, "message": body, "tags": ["soccer"]}, timeout=30)
+    r = requests.post(NTFY_URL, json={"topic": topic, "title": title, "message": body, "tags": tags or ["soccer"]}, timeout=30)
     r.raise_for_status()
 
 
@@ -93,9 +118,11 @@ def main() -> int:
     active = [t for t in load_teams(args.config) if t["active"]]
     secrets = {} if args.dry_run else load_secrets(active)
 
+    now = datetime.now(timezone.utc)
     failed = False
     changed: list[str] = []
     pending: list[tuple[dict[str, Any], str]] = []
+    warnings: list[str] = []
     for team in active:
         path = ROOT / team["out"]
         old = path.read_text(encoding="utf-8") if path.exists() else ""
@@ -105,6 +132,7 @@ def main() -> int:
             print(f"::error::{team['name']}: fetch failed: {exc}", file=sys.stderr)
             failed = True
             continue
+        warnings += health_warnings(team, new, now)
         if _strip_dtstamp(old) == _strip_dtstamp(new):
             print(f"{team['name']}: unchanged")
             continue
@@ -114,6 +142,9 @@ def main() -> int:
             pending.append((team, body))
         else:
             print(f"{team['name']}: changed, but nothing user-visible")
+
+    for w in warnings:
+        print(f"::warning::{w}", file=sys.stderr)
 
     if args.dry_run:
         for team, body in pending:
@@ -132,6 +163,11 @@ def main() -> int:
         except Exception as exc:  # keep notifying the other teams
             print(f"::error::{team['name']}: ntfy failed: {exc}", file=sys.stderr)
             failed = True
+
+    if warnings and alert_due(now):
+        notify(secrets[HEARTBEAT_SECRET], "Fixtures: check team config",
+               "\n".join(warnings) + "\nArchive the team (active = false) or update its season in teams.toml.",
+               tags=["warning"])
     return 1 if failed else 0
 
 

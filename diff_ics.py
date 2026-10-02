@@ -86,14 +86,14 @@ def _describe(ev: dict[str, str]) -> str:
     return " — ".join(parts)
 
 
-def diff(old: dict[str, dict[str, str]], new: dict[str, dict[str, str]]) -> str:
+def diff(old: dict[str, dict[str, str]], new: dict[str, dict[str, str]], now: datetime | None = None) -> str:
     old_uids = set(old)
     new_uids = set(new)
     added_uids = new_uids - old_uids
     removed_uids = old_uids - new_uids
     common_uids = old_uids & new_uids
 
-    now = datetime.now(timezone.utc)
+    now = now or datetime.now(timezone.utc)
     lines: list[str] = []
 
     # Added: skip if the new fixture is already in the past.

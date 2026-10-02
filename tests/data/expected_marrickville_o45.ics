@@ -1,0 +1,41 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//graeme//dribl-fixtures//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:Coventry City FC (Marrickville O45 F5s)
+X-WR-TIMEZONE:Australia/Sydney
+BEGIN:VEVENT
+UID:ld45MgG3xm@dribl
+DTSTAMP:20261002T101508Z
+DTSTART:20261008T090000Z
+DTEND:20261008T094500Z
+SUMMARY:Coventry City FC v Besiktas
+LOCATION:Tempe Recreation Reserve\, Field 28
+DESCRIPTION:League: Over 45 Men Black Male\nRound: Round 1\nCompetition: Marrickville F5s\nhttps://marrickvillefc.dribl.com/matchcentre?m=Omep8Pwj1d
+GEO:-33.92953;151.16037
+URL:https://marrickvillefc.dribl.com/matchcentre?m=Omep8Pwj1d
+END:VEVENT
+BEGIN:VEVENT
+UID:gdM6nea8Qm@dribl
+DTSTAMP:20261002T101508Z
+DTSTART:20261015T090000Z
+DTEND:20261015T094500Z
+SUMMARY:Young Boys v Coventry City FC
+LOCATION:Tempe Recreation Reserve\, Field 02
+DESCRIPTION:League: Over 45 Men Black Male\nRound: Round 2\nCompetition: Marrickville F5s\nhttps://marrickvillefc.dribl.com/matchcentre?m=2Kp0G4a0BK
+GEO:-33.92953;151.16037
+URL:https://marrickvillefc.dribl.com/matchcentre?m=2Kp0G4a0BK
+END:VEVENT
+BEGIN:VEVENT
+UID:nmYn0A1pbN@dribl
+DTSTAMP:20261002T101508Z
+DTSTART:20261022T090500Z
+DTEND:20261022T095000Z
+SUMMARY:Coventry City FC v Cusco FC
+LOCATION:Tempe Recreation Reserve\, Field 03
+DESCRIPTION:League: Over 45 Men Black Male\nRound: Round 3\nCompetition: Marrickville F5s\nhttps://marrickvillefc.dribl.com/matchcentre?m=jmaz87ElVN
+GEO:-33.92953;151.16037
+URL:https://marrickvillefc.dribl.com/matchcentre?m=jmaz87ElVN
+END:VEVENT
+END:VCALENDAR
