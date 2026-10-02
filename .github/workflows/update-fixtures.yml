@@ -24,183 +24,11 @@ jobs:
           cache: pip
       - run: pip install curl_cffi
 
-      # --- Burwood 45 05 (CDSFA) ---
-      - name: Snapshot Burwood 45 05 (HEAD)
-        run: |
-          git show HEAD:burwood.ics > /tmp/old_burwood.ics 2>/dev/null || : > /tmp/old_burwood.ics
-
-      - name: Generate Burwood 45 05
-        run: |
-          python3 dribl_to_ics.py \
-            --tenant JR1K3RNQ9M \
-            --season k2KpooqNY5 \
-            --club 3yvdWENO05 \
-            --competition R1K3BBXLNQ \
-            --league BdDDYpGwdb \
-            --team am1QPnXjmw \
-            --calname "Burwood FC 45 05" \
-            --match-url-base "https://cdsfa.dribl.com/matchcentre?m=" \
-            --out burwood.ics
-
-      - name: Diff Burwood 45 05
-        id: diff_burwood
-        run: |
-          # Commit decision: any non-DTSTAMP difference
-          if [ -s /tmp/old_burwood.ics ]; then
-            grep -v '^DTSTAMP' /tmp/old_burwood.ics > /tmp/old_burwood_clean
-            grep -v '^DTSTAMP' burwood.ics > /tmp/new_burwood_clean
-            if diff -q /tmp/old_burwood_clean /tmp/new_burwood_clean > /dev/null; then
-              echo "changed=false" >> $GITHUB_OUTPUT
-            else
-              echo "changed=true" >> $GITHUB_OUTPUT
-            fi
-          else
-            echo "changed=true" >> $GITHUB_OUTPUT
-          fi
-          # Notify decision: semantic diff (time/ground/match/added/removed)
-          body=$(python3 diff_ics.py --old /tmp/old_burwood.ics --new burwood.ics)
-          if [ -z "$body" ]; then
-            echo "notify=false" >> $GITHUB_OUTPUT
-          else
-            echo "notify=true" >> $GITHUB_OUTPUT
-            delim=$(openssl rand -hex 12)
-            {
-              echo "body<<$delim"
-              echo "$body"
-              echo "$delim"
-            } >> $GITHUB_OUTPUT
-          fi
-
-      # --- Burwood 45 03 ---
-      - name: Snapshot Burwood 45 03 (HEAD)
-        run: |
-          git show HEAD:burwood_45_03.ics > /tmp/old_burwood_45_03.ics 2>/dev/null || : > /tmp/old_burwood_45_03.ics
-
-      - name: Generate Burwood 45 03
-        run: |
-          python3 dribl_to_ics.py \
-            --tenant JR1K3RNQ9M \
-            --season k2KpooqNY5 \
-            --club 3yvdWENO05 \
-            --team jdylv4ZDK5 \
-            --calname "Burwood FC 45 03 (O45 Div 3)" \
-            --match-url-base "https://cdsfa.dribl.com/matchcentre?m=" \
-            --out burwood_45_03.ics
-
-      - name: Diff Burwood 45 03
-        id: diff_burwood_45_03
-        run: |
-          if [ -s /tmp/old_burwood_45_03.ics ]; then
-            grep -v '^DTSTAMP' /tmp/old_burwood_45_03.ics > /tmp/old_clean
-            grep -v '^DTSTAMP' burwood_45_03.ics > /tmp/new_clean
-            if diff -q /tmp/old_clean /tmp/new_clean > /dev/null; then
-              echo "changed=false" >> $GITHUB_OUTPUT
-            else
-              echo "changed=true" >> $GITHUB_OUTPUT
-            fi
-          else
-            echo "changed=true" >> $GITHUB_OUTPUT
-          fi
-          body=$(python3 diff_ics.py --old /tmp/old_burwood_45_03.ics --new burwood_45_03.ics)
-          if [ -z "$body" ]; then
-            echo "notify=false" >> $GITHUB_OUTPUT
-          else
-            echo "notify=true" >> $GITHUB_OUTPUT
-            delim=$(openssl rand -hex 12)
-            {
-              echo "body<<$delim"
-              echo "$body"
-              echo "$delim"
-            } >> $GITHUB_OUTPUT
-          fi
-
-      # --- Easts PISA ---
-      - name: Snapshot Easts PISA (HEAD)
-        run: |
-          git show HEAD:easts_pisa.ics > /tmp/old_easts_pisa.ics 2>/dev/null || : > /tmp/old_easts_pisa.ics
-
-      - name: Generate Easts PISA
-        run: |
-          python3 dribl_to_ics.py \
-            --tenant GwxNxOmkpO \
-            --season 3pmvLyLKvJ \
-            --club 8nm7P0kNOq \
-            --team pN69xRgBm0 \
-            --calname "Easts FC G09 Blue PISA" \
-            --match-url-base "https://esfa.dribl.com/matchcentre?m=" \
-            --home-prefix "🔵 " \
-            --away-prefix "⚪ " \
-            --out easts_pisa.ics
-
-      - name: Diff Easts PISA
-        id: diff_easts
-        run: |
-          if [ -s /tmp/old_easts_pisa.ics ]; then
-            grep -v '^DTSTAMP' /tmp/old_easts_pisa.ics > /tmp/old_clean
-            grep -v '^DTSTAMP' easts_pisa.ics > /tmp/new_clean
-            if diff -q /tmp/old_clean /tmp/new_clean > /dev/null; then
-              echo "changed=false" >> $GITHUB_OUTPUT
-            else
-              echo "changed=true" >> $GITHUB_OUTPUT
-            fi
-          else
-            echo "changed=true" >> $GITHUB_OUTPUT
-          fi
-          body=$(python3 diff_ics.py --old /tmp/old_easts_pisa.ics --new easts_pisa.ics)
-          if [ -z "$body" ]; then
-            echo "notify=false" >> $GITHUB_OUTPUT
-          else
-            echo "notify=true" >> $GITHUB_OUTPUT
-            delim=$(openssl rand -hex 12)
-            {
-              echo "body<<$delim"
-              echo "$body"
-              echo "$delim"
-            } >> $GITHUB_OUTPUT
-          fi
-
-      # --- Commit + notify ---
-      - name: Commit if any team's .ics changed
-        if: steps.diff_burwood.outputs.changed == 'true' || steps.diff_burwood_45_03.outputs.changed == 'true' || steps.diff_easts.outputs.changed == 'true'
-        run: |
-          git config user.name "github-actions"
-          git config user.email "github-actions@users.noreply.github.com"
-          git add burwood.ics burwood_45_03.ics easts_pisa.ics
-          git commit -m "Update fixtures $(date -u +%Y-%m-%d)"
-          git push
-
-      - name: Notify Burwood 45 05 subscribers
-        if: steps.diff_burwood.outputs.notify == 'true'
-        env:
-          BODY: ${{ steps.diff_burwood.outputs.body }}
-          TOPIC: ${{ secrets.NTFY_TOPIC_BURWOOD }}
-        run: |
-          curl -H "Title: Burwood FC 45 05 fixtures updated" \
-               -H "Tags: soccer" \
-               --data-binary "$BODY" \
-               "ntfy.sh/$TOPIC"
-
-      - name: Notify Burwood 45 03 subscribers
-        if: steps.diff_burwood_45_03.outputs.notify == 'true'
-        env:
-          BODY: ${{ steps.diff_burwood_45_03.outputs.body }}
-          TOPIC: ${{ secrets.NTFY_TOPIC_BURWOOD_O45_DIV3 }}
-        run: |
-          curl -H "Title: Burwood FC 45 03 (O45 Div 3) fixtures updated" \
-               -H "Tags: soccer" \
-               --data-binary "$BODY" \
-               "ntfy.sh/$TOPIC"
-
-      - name: Notify Easts subscribers
-        if: steps.diff_easts.outputs.notify == 'true'
-        env:
-          BODY: ${{ steps.diff_easts.outputs.body }}
-          TOPIC: ${{ secrets.NTFY_TOPIC_EASTS }}
-        run: |
-          curl -H "Title: Easts FC G09 Blue PISA fixtures updated" \
-               -H "Tags: soccer" \
-               --data-binary "$BODY" \
-               "ntfy.sh/$TOPIC"
+      # No teams active: the 2026 winter season has ended. Burwood 45 05,
+      # Burwood 45 03 and Easts PISA were archived. Their .ics files stay frozen
+      # at the same Pages URLs so subscribers keep the season's history. The
+      # per-team Snapshot/Generate/Diff/Commit/Notify blocks are kept in the
+      # `season-2026` tag; copy one from there to add a team.
 
       # --- Weekly heartbeat ---
       # Fires only on scheduled Thursday runs, and only if no auto-commits
@@ -215,6 +43,9 @@ jobs:
             echo "Not Thursday (UTC) — skipping heartbeat."
             exit 0
           fi
+          # An unset secret used to make curl post to bare ntfy.sh/, get a 400, and
+          # still exit 0. Fail loudly instead.
+          if [ -z "$TOPIC" ]; then echo "::error::NTFY_TOPIC_HEARTBEAT is not set"; exit 1; fi
           count=$(git log --since="7 days ago" --author="github-actions" --oneline | wc -l)
           echo "Auto-commits in last 7 days: $count"
           if [ "$count" -gt 0 ]; then
@@ -222,8 +53,8 @@ jobs:
             exit 0
           fi
           last_run_utc=$(date -u +"%Y-%m-%d %H:%M UTC")
-          curl -H "Title: Fixtures system: weekly check-in" \
+          curl -fsS -H "Title: Fixtures system: weekly check-in" \
                -H "Tags: heartbeat,white_check_mark" \
-               -d "All quiet. The daily check ran today and there have been no fixture changes for any of the three teams in the past 7 days. Last run: $last_run_utc." \
+               -d "All quiet. The daily check ran today and there have been no fixture changes in the past 7 days. Last run: $last_run_utc." \
                "ntfy.sh/$TOPIC"
 

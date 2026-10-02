@@ -1,6 +1,6 @@
 # fixtures
 
-Auto-updating soccer fixture calendars for three teams, plus push notifications when anything changes. Built on GitHub Actions + Pages + ntfy.
+Auto-updating soccer fixture calendars, plus push notifications when anything changes. Built on GitHub Actions + Pages + ntfy.
 
 ## What it does
 
@@ -16,11 +16,17 @@ The committed `.ics` files are served as static URLs from GitHub Pages. Calendar
 
 ## Teams currently tracked
 
-| Team | Association | `.ics` URL | ntfy topic (repo secret) |
-|---|---|---|---|
-| Burwood FC 45 05 | CDSFA | `burwood.ics` | `NTFY_TOPIC_BURWOOD` |
-| Burwood FC 45 03 (Over 45s Div 3) | CDSFA | `burwood_45_03.ics` | `NTFY_TOPIC_BURWOOD_O45_DIV3` |
-| Easts FC G09 Blue PISA | ESFA | `easts_pisa.ics` | `NTFY_TOPIC_EASTS` |
+None. Add one with the recipe below.
+
+## Archived teams (2026 winter season)
+
+These are no longer fetched. Their `.ics` files are frozen at the same URLs so existing subscribers keep the season's history. The workflow steps that built them are in the `season-2026` tag.
+
+| Team | Association | `.ics` URL |
+|---|---|---|
+| Burwood FC 45 05 | CDSFA | `burwood.ics` |
+| Burwood FC 45 03 (Over 45s Div 3) | CDSFA | `burwood_45_03.ics` |
+| Easts FC G09 Blue PISA | ESFA | `easts_pisa.ics` |
 
 Public URL prefix: `https://grayme01.github.io/fixtures/`.
 
@@ -30,12 +36,12 @@ Easts titles also carry a kit-colour circle: `🔵` when PISA is the home team (
 
 Runs at:
 
-- **Mon–Fri 10:00 Sydney AEST** (`0 0 * * 1-5` UTC)
-- **Sat–Sun 08:00 Sydney AEST** (`0 22 * * 5,6` UTC, i.e. Fri/Sat 22:00 UTC)
+- **Mon–Fri ~10:13 Sydney AEST** (`13 0 * * 1-5` UTC)
+- **Sat–Sun ~08:13 Sydney AEST** (`13 22 * * 5,6` UTC, i.e. Fri/Sat 22:13 UTC)
 
 Plus `workflow_dispatch` from the Actions tab on demand.
 
-GitHub Actions cron is in UTC and best-effort (5–15 min drift is normal). The schedule is tuned to AEST since the soccer season runs through winter; during AEDT (~Oct–Apr) the runs fire 1h later than the labels.
+GitHub Actions cron is in UTC and best-effort. In practice runs have landed 2–5 hours late, so don't rely on the exact time. The schedule is tuned to AEST since the soccer season runs through winter; during AEDT (~Oct–Apr) the runs fire 1h later than the labels.
 
 ## Files
 
@@ -43,8 +49,8 @@ GitHub Actions cron is in UTC and best-effort (5–15 min drift is normal). The 
 |---|---|
 | `dribl_to_ics.py` | Fetches fixtures for one team (paginated via `meta.next_cursor`), filters to that team's hash, emits an `.ics`. CLI: `--tenant --season --club [--competition --league] --team --calname --match-url-base [--home-prefix --away-prefix] --out`. |
 | `diff_ics.py` | Parses old and new `.ics`, emits a human-readable, ntfy-bound summary of added/removed/changed events (only on semantic fields: DTSTART, LOCATION, SUMMARY). |
-| `.github/workflows/update-fixtures.yml` | Cron-triggered workflow that runs all three teams and routes notifications per-team. |
-| `burwood.ics`, `burwood_45_03.ics`, `easts_pisa.ics` | The serving `.ics` files; rewritten by the workflow when content changes. |
+| `.github/workflows/update-fixtures.yml` | Cron-triggered workflow that runs each active team, routes notifications per-team, and sends the Thursday heartbeat. |
+| `*.ics` | The serving `.ics` files; rewritten by the workflow when an active team's content changes. |
 
 ## Adding another team
 
@@ -57,7 +63,7 @@ GitHub Actions cron is in UTC and best-effort (5–15 min drift is normal). The 
     - A `Generate <team>` step calling `python3 dribl_to_ics.py` with the team's hashes, a `--calname`, a `--match-url-base` (`https://<subdomain>.dribl.com/matchcentre?m=`), and `--out <team>.ics`.
     - A `Diff <team>` step with `id: diff_<team>` that sets both `changed` (raw content diff, drives commit) and `notify` + `body` (semantic diff, drives ntfy).
     - Add the new `.ics` file to the `git add` line in the commit step.
-    - Add a Notify step gated on `steps.diff_<team>.outputs.notify == 'true'`, using `env: BODY:` and `env: TOPIC:`.
+    - Add a Notify step gated on `steps.diff_<team>.outputs.notify == 'true'`, using `env: BODY:` and `env: TOPIC:`. Fail if `$TOPIC` is empty and use `curl -fsS`: plain `curl` exits 0 on an ntfy 400, so a missing secret would otherwise pass silently.
 
 4. Push. Trigger the workflow manually to verify. Enable GitHub Pages once already (no per-team setup needed).
 
