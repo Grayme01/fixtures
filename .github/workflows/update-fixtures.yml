@@ -24,11 +24,78 @@ jobs:
           cache: pip
       - run: pip install curl_cffi
 
-      # No teams active: the 2026 winter season has ended. Burwood 45 05,
-      # Burwood 45 03 and Easts PISA were archived. Their .ics files stay frozen
-      # at the same Pages URLs so subscribers keep the season's history. The
-      # per-team Snapshot/Generate/Diff/Commit/Notify blocks are kept in the
-      # `season-2026` tag; copy one from there to add a team.
+      # Burwood 45 05, Burwood 45 03 and Easts PISA (2026 winter) are archived:
+      # their .ics files stay frozen at the same Pages URLs, and their workflow
+      # steps are kept in the `season-2026` tag.
+
+      # --- Marrickville F5s O45: Coventry City FC ---
+      - name: Snapshot Marrickville O45 (HEAD)
+        run: |
+          git show HEAD:marrickville_o45.ics > /tmp/old_marrickville_o45.ics 2>/dev/null || : > /tmp/old_marrickville_o45.ics
+
+      - name: Generate Marrickville O45
+        run: |
+          python3 dribl_to_ics.py \
+            --tenant pAnmYMzmzG \
+            --season XRNErWXKva \
+            --club yBjmaBqNRq \
+            --competition V8dnlqBoNw \
+            --team WdgpR1DomR \
+            --calname "Coventry City FC (Marrickville O45 F5s)" \
+            --match-url-base "https://marrickvillefc.dribl.com/matchcentre?m=" \
+            --strip-team-prefix "Marrickville Over 45 Men " \
+            --duration 45 \
+            --out marrickville_o45.ics
+
+      - name: Diff Marrickville O45
+        id: diff_marrickville_o45
+        run: |
+          if [ -s /tmp/old_marrickville_o45.ics ]; then
+            grep -v '^DTSTAMP' /tmp/old_marrickville_o45.ics > /tmp/old_clean
+            grep -v '^DTSTAMP' marrickville_o45.ics > /tmp/new_clean
+            if diff -q /tmp/old_clean /tmp/new_clean > /dev/null; then
+              echo "changed=false" >> $GITHUB_OUTPUT
+            else
+              echo "changed=true" >> $GITHUB_OUTPUT
+            fi
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
+          fi
+          body=$(python3 diff_ics.py --old /tmp/old_marrickville_o45.ics --new marrickville_o45.ics)
+          if [ -z "$body" ]; then
+            echo "notify=false" >> $GITHUB_OUTPUT
+          else
+            echo "notify=true" >> $GITHUB_OUTPUT
+            delim=$(openssl rand -hex 12)
+            {
+              echo "body<<$delim"
+              echo "$body"
+              echo "$delim"
+            } >> $GITHUB_OUTPUT
+          fi
+
+      # --- Commit + notify ---
+      - name: Commit if any team's .ics changed
+        if: steps.diff_marrickville_o45.outputs.changed == 'true'
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@users.noreply.github.com"
+          git add marrickville_o45.ics
+          git commit -m "Update fixtures $(date -u +%Y-%m-%d)"
+          git push
+
+      - name: Notify Marrickville O45 subscribers
+        if: steps.diff_marrickville_o45.outputs.notify == 'true'
+        env:
+          BODY: ${{ steps.diff_marrickville_o45.outputs.body }}
+          TOPIC: ${{ secrets.NTFY_TOPIC_MARRICKVILLE }}
+        run: |
+          # Plain curl exits 0 on an ntfy 400, so an unset secret would pass silently.
+          if [ -z "$TOPIC" ]; then echo "::error::NTFY_TOPIC_MARRICKVILLE is not set"; exit 1; fi
+          curl -fsS -H "Title: Coventry City FC (O45 F5s) fixtures updated" \
+               -H "Tags: soccer" \
+               --data-binary "$BODY" \
+               "ntfy.sh/$TOPIC"
 
       # --- Weekly heartbeat ---
       # Fires only on scheduled Thursday runs, and only if no auto-commits

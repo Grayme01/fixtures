@@ -16,7 +16,11 @@ The committed `.ics` files are served as static URLs from GitHub Pages. Calendar
 
 ## Teams currently tracked
 
-None. Add one with the recipe below.
+| Team | Association | `.ics` URL | ntfy topic (repo secret) |
+|---|---|---|---|
+| Coventry City FC (Marrickville F5s, Over 45 Men Black) | Marrickville FC (own tenant, summer five-a-side) | `marrickville_o45.ics` | `NTFY_TOPIC_MARRICKVILLE` |
+
+Coventry City titles drop the repeated `Marrickville Over 45 Men ` prefix from team names, and events are 45 minutes long.
 
 ## Archived teams (2026 winter season)
 
@@ -47,7 +51,7 @@ GitHub Actions cron is in UTC and best-effort. In practice runs have landed 2–
 
 | Path | Purpose |
 |---|---|
-| `dribl_to_ics.py` | Fetches fixtures for one team (paginated via `meta.next_cursor`), filters to that team's hash, emits an `.ics`. CLI: `--tenant --season --club [--competition --league] --team --calname --match-url-base [--home-prefix --away-prefix] --out`. |
+| `dribl_to_ics.py` | Fetches fixtures for one team (paginated via `meta.next_cursor`), filters to that team's hash, emits an `.ics`. CLI: `--tenant --season --club [--competition --league] --team --calname --match-url-base [--home-prefix --away-prefix --strip-team-prefix --duration] --out`. |
 | `diff_ics.py` | Parses old and new `.ics`, emits a human-readable, ntfy-bound summary of added/removed/changed events (only on semantic fields: DTSTART, LOCATION, SUMMARY). |
 | `.github/workflows/update-fixtures.yml` | Cron-triggered workflow that runs each active team, routes notifications per-team, and sends the Thursday heartbeat. |
 | `*.ics` | The serving `.ics` files; rewritten by the workflow when an active team's content changes. |
