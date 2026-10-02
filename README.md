@@ -73,6 +73,7 @@ Not yet done: an outside dead-man's switch (e.g. a healthchecks.io ping on every
 | `.github/workflows/tests.yml` | Runs pytest on every push and pull request. |
 | `.github/workflows/keepalive.yml` | Monthly re-enable of the scheduled workflows. |
 | `requirements.txt` / `requirements-dev.txt` | Pinned runtime (`curl_cffi`) and test (`pytest`) dependencies. |
+| `coventry.html` | Public one-tap subscribe page for Coventry City FC (Apple / Google / Outlook buttons, copy-link fallback). Must never contain an ntfy topic name. |
 | `*.ics` | The served calendars; rewritten only when an active team's content changes. |
 
 ## Adding another team

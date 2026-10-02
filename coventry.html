@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Coventry City FC fixtures</title>
+<meta name="description" content="Add the Coventry City FC (Marrickville O45 F5s) fixtures to your calendar.">
+<!-- Public page: never put an ntfy topic name here. -->
+<style>
+  :root {
+    --bg: #f6f7f9; --card: #ffffff; --text: #1b1f24; --muted: #5b6470;
+    --border: #dde1e6; --accent: #0b5cad; --accent-text: #ffffff; --ok: #1a7f37;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #111418; --card: #1a1f25; --text: #e8eaed; --muted: #a0a8b3;
+      --border: #2e353d; --accent: #4c9be8; --accent-text: #0b1520; --ok: #4ac26b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+  main { max-width: 34rem; margin: 0 auto; padding: 2rem 1rem 3rem; }
+  h1 { font-size: 1.5rem; line-height: 1.25; margin: 0 0 .25rem; }
+  .sub { color: var(--muted); margin: 0 0 1.5rem; }
+  .card {
+    background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+    padding: 1.1rem 1.1rem 1.2rem; margin-bottom: 1rem;
+  }
+  .card h2 { font-size: 1.05rem; margin: 0 0 .6rem; }
+  .card p, .card ol { margin: .6rem 0 0; color: var(--muted); font-size: .95rem; }
+  .card ol { padding-left: 1.2rem; }
+  .button {
+    display: block; width: 100%; text-align: center; text-decoration: none;
+    background: var(--accent); color: var(--accent-text); font-weight: 600;
+    border: 0; border-radius: 10px; padding: .85rem 1rem; font-size: 1rem; cursor: pointer;
+  }
+  .button.secondary { background: transparent; color: var(--accent); border: 1px solid var(--border); }
+  .suggested { border: 2px solid var(--accent); }
+  .tag {
+    display: none; font-size: .75rem; font-weight: 600; color: var(--accent);
+    text-transform: uppercase; letter-spacing: .04em; margin-bottom: .3rem;
+  }
+  .suggested .tag { display: block; }
+  code {
+    display: block; word-break: break-all; background: var(--bg); border: 1px solid var(--border);
+    border-radius: 8px; padding: .6rem .7rem; font-size: .85rem; margin-top: .6rem; color: var(--text);
+  }
+  .copied { color: var(--ok); font-weight: 600; min-height: 1.5em; margin: .5rem 0 0; font-size: .9rem; }
+  footer { color: var(--muted); font-size: .85rem; margin-top: 1.5rem; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Coventry City FC fixtures</h1>
+  <p class="sub">Marrickville F5s, Over 45 Men Black. Add the calendar once and every game, time change and field change appears automatically.</p>
+
+  <div id="all-cards">
+    <section class="card" id="apple">
+      <div class="tag">Suggested for your device</div>
+      <h2>iPhone, iPad or Mac</h2>
+      <a class="button" id="apple-link" href="#">Add to Apple Calendar</a>
+      <p>Tap the button, then <strong>Subscribe</strong> (iPhone may ask you to confirm first).</p>
+    </section>
+
+    <section class="card" id="google">
+      <div class="tag">Suggested for your device</div>
+      <h2>Google Calendar or Android</h2>
+      <a class="button" id="google-link" href="#" target="_blank" rel="noopener">Add to Google Calendar</a>
+      <p id="android-note">On an Android phone this button may just open the Calendar app without adding anything. If so, open this page on a computer and click the button there, signed in with the same Google account as your phone.</p>
+      <p>Then, on your phone, turn the calendar on:</p>
+      <ol>
+        <li>Open the Google Calendar app, tap <strong>☰</strong> and then <strong>Settings</strong>.</li>
+        <li>Tap <strong>Coventry City FC (Marrickville O45 F5s)</strong> (under <strong>Show more</strong> if it's hidden).</li>
+        <li>Make sure <strong>Sync</strong> is on.</li>
+      </ol>
+    </section>
+
+    <section class="card" id="outlook">
+      <h2>Outlook</h2>
+      <a class="button secondary" id="outlook-link" href="#" target="_blank" rel="noopener">Add to Outlook.com</a>
+    </section>
+
+    <section class="card" id="other">
+      <h2>Anything else</h2>
+      <button class="button secondary" id="copy">Copy calendar link</button>
+      <p>Paste it wherever your calendar app says "subscribe to calendar" or "add from URL". Don't use "import": that copies the games once and never updates.</p>
+      <code id="url"></code>
+      <p class="copied" id="copied" aria-live="polite"></p>
+    </section>
+  </div>
+
+  <footer>Google Calendar can take up to a day to show changes; Apple Calendar is quicker.</footer>
+</main>
+
+<script>
+  // Same host as this page, so the page keeps working if it's ever moved.
+  const ICS = new URL("marrickville_coventry_o45_2026.ics", location.href).href;
+  const webcal = ICS.replace(/^https?:/, "webcal:");
+  const name = "Coventry City FC (Marrickville O45 F5s)";
+
+  document.getElementById("apple-link").href = webcal;
+  document.getElementById("google-link").href =
+    "https://calendar.google.com/calendar/r?cid=" + encodeURIComponent(webcal);
+  document.getElementById("outlook-link").href =
+    "https://outlook.live.com/calendar/0/addfromweb?url=" + encodeURIComponent(ICS) +
+    "&name=" + encodeURIComponent(name);
+  document.getElementById("url").textContent = ICS;
+
+  document.getElementById("copy").addEventListener("click", async () => {
+    const msg = document.getElementById("copied");
+    try {
+      await navigator.clipboard.writeText(ICS);
+      msg.textContent = "Copied.";
+    } catch {
+      msg.textContent = "Couldn't copy automatically. Press and hold the link above to copy it.";
+    }
+  });
+
+  // Put the likely button first. iPadOS reports itself as a Mac, which is fine:
+  // both use Apple Calendar.
+  const ua = navigator.userAgent;
+  const isAndroid = /Android/i.test(ua);
+  const isApple = /iPhone|iPad|iPod|Macintosh/i.test(ua);
+  const first = isAndroid ? "google" : isApple ? "apple" : null;
+  if (!isAndroid) document.getElementById("android-note").hidden = true;
+  if (first) {
+    const card = document.getElementById(first);
+    card.classList.add("suggested");
+    document.getElementById("all-cards").prepend(card);
+  }
+</script>
+</body>
+</html>
