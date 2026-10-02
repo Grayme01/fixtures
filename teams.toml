@@ -1,0 +1,71 @@
+# One [[team]] block per calendar. update.py fetches, diffs, commits and
+# notifies for every team with active = true. Inactive teams are never
+# touched, so their .ics files stay frozen at the same Pages URL.
+#
+# Keys:
+#   name               Used in the ntfy title ("<name> fixtures updated") and logs
+#   active             true = fetch on each run
+#   out                .ics filename (= Pages URL path)
+#   ntfy_secret        Repo secret holding the team's ntfy topic
+#   tenant, season     Dribl hashes (required)
+#   club, competition, league, team   Dribl hashes (optional; team filters client-side)
+#   calname            X-WR-CALNAME shown in calendar apps
+#   match_url_base     https://<subdomain>.dribl.com/matchcentre?m=
+#   home_prefix, away_prefix, strip_team_prefix, duration   Optional title/length tweaks
+
+[[team]]
+name = "Coventry City FC (O45 F5s)"
+active = true
+out = "marrickville_o45.ics"
+ntfy_secret = "NTFY_TOPIC_MARRICKVILLE"
+tenant = "pAnmYMzmzG"
+season = "XRNErWXKva"
+club = "yBjmaBqNRq"
+competition = "V8dnlqBoNw"
+team = "WdgpR1DomR"
+calname = "Coventry City FC (Marrickville O45 F5s)"
+match_url_base = "https://marrickvillefc.dribl.com/matchcentre?m="
+strip_team_prefix = "Marrickville Over 45 Men "
+duration = 45
+
+# --- Archived: 2026 winter season ---
+
+[[team]]
+name = "Burwood FC 45 05"
+active = false
+out = "burwood.ics"
+ntfy_secret = "NTFY_TOPIC_BURWOOD"
+tenant = "JR1K3RNQ9M"
+season = "k2KpooqNY5"
+club = "3yvdWENO05"
+competition = "R1K3BBXLNQ"
+league = "BdDDYpGwdb"
+team = "am1QPnXjmw"
+calname = "Burwood FC 45 05"
+match_url_base = "https://cdsfa.dribl.com/matchcentre?m="
+
+[[team]]
+name = "Burwood FC 45 03 (O45 Div 3)"
+active = false
+out = "burwood_45_03.ics"
+ntfy_secret = "NTFY_TOPIC_BURWOOD_O45_DIV3"   # never created
+tenant = "JR1K3RNQ9M"
+season = "k2KpooqNY5"
+club = "3yvdWENO05"
+team = "jdylv4ZDK5"
+calname = "Burwood FC 45 03 (O45 Div 3)"
+match_url_base = "https://cdsfa.dribl.com/matchcentre?m="
+
+[[team]]
+name = "Easts FC G09 Blue PISA"
+active = false
+out = "easts_pisa.ics"
+ntfy_secret = "NTFY_TOPIC_EASTS"
+tenant = "GwxNxOmkpO"
+season = "3pmvLyLKvJ"
+club = "8nm7P0kNOq"
+team = "pN69xRgBm0"
+calname = "Easts FC G09 Blue PISA"
+match_url_base = "https://esfa.dribl.com/matchcentre?m="
+home_prefix = "🔵 "
+away_prefix = "⚪ "

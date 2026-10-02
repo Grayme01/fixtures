@@ -36,19 +36,19 @@ TZ = ZoneInfo("Australia/Sydney")
 DEFAULT_DURATION_MIN = 90
 
 
-def build_api_url(args: argparse.Namespace) -> str:
+def build_api_url(tenant: str, season: str, club: str | None = None, competition: str | None = None, league: str | None = None) -> str:
     params: dict[str, str] = {
         "date_range": "all",
-        "season": args.season,
-        "tenant": args.tenant,
+        "season": season,
+        "tenant": tenant,
         "timezone": "Australia/Sydney",
     }
-    if args.club:
-        params["club"] = args.club
-    if args.competition:
-        params["competition"] = args.competition
-    if args.league:
-        params["league"] = args.league
+    if club:
+        params["club"] = club
+    if competition:
+        params["competition"] = competition
+    if league:
+        params["league"] = league
     return f"{API_BASE}?{urlencode(params)}"
 
 
@@ -234,7 +234,7 @@ def main() -> int:
     parser.add_argument("--inspect", action="store_true", help="print raw API payload (truncated) and exit")
     args = parser.parse_args()
 
-    url = build_api_url(args)
+    url = build_api_url(args.tenant, args.season, args.club, args.competition, args.league)
     fixtures = fetch_fixtures(url)
 
     if args.inspect:

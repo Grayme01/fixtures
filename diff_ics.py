@@ -148,6 +148,13 @@ def diff(old: dict[str, dict[str, str]], new: dict[str, dict[str, str]]) -> str:
     return body
 
 
+def summarise(old_text: str, new_text: str) -> str:
+    """Notification body for an old -> new .ics change; "" if nothing user-visible changed."""
+    if not old_text:
+        return f"Initial fixture list ({len(parse_ics(new_text))} fixtures)"
+    return diff(parse_ics(old_text), parse_ics(new_text))
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--old", type=Path, required=True)
@@ -157,16 +164,9 @@ def main() -> int:
     old_text = args.old.read_text(encoding="utf-8") if args.old.exists() and args.old.stat().st_size > 0 else ""
     new_text = args.new.read_text(encoding="utf-8")
 
-    if not old_text:
-        n = len(parse_ics(new_text))
-        print(f"Initial fixture list ({n} fixtures)")
-        return 0
-
-    body = diff(parse_ics(old_text), parse_ics(new_text))
-    if not body:
-        # Nothing semantically changed (probably just DTSTAMP differences)
-        return 0
-    print(body)
+    body = summarise(old_text, new_text)
+    if body:
+        print(body)
     return 0
 
 
