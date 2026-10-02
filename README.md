@@ -18,7 +18,7 @@ The committed `.ics` files are served as static URLs from GitHub Pages. Calendar
 
 | Team | Association | `.ics` URL | ntfy topic (repo secret) |
 |---|---|---|---|
-| Coventry City FC (Marrickville F5s, Over 45 Men Black) | Marrickville FC (own tenant, summer five-a-side) | `marrickville_o45.ics` | `NTFY_TOPIC_MARRICKVILLE` |
+| Coventry City FC (Marrickville F5s, Over 45 Men Black) | Marrickville FC (own tenant, summer five-a-side) | `marrickville_coventry_o45_2026.ics` | `NTFY_TOPIC_MARRICKVILLE` |
 
 Coventry City titles drop the repeated `Marrickville Over 45 Men ` prefix from team names, and events are 45 minutes long.
 

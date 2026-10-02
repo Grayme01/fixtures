@@ -62,5 +62,5 @@ def test_missing_secret_fails_fast(monkeypatch):
 
 def test_archived_teams_are_configured_inactive():
     teams = {t["out"]: t["active"] for t in update.load_teams(update.ROOT / "teams.toml")}
-    assert teams == {"marrickville_o45.ics": True, "burwood.ics": False,
+    assert teams == {"marrickville_coventry_o45_2026.ics": True, "burwood.ics": False,
                      "burwood_45_03.ics": False, "easts_pisa.ics": False}

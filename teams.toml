@@ -16,7 +16,7 @@
 [[team]]
 name = "Coventry City FC (O45 F5s)"
 active = true
-out = "marrickville_o45.ics"
+out = "marrickville_coventry_o45_2026.ics"
 ntfy_secret = "NTFY_TOPIC_MARRICKVILLE"
 tenant = "pAnmYMzmzG"
 season = "XRNErWXKva"
