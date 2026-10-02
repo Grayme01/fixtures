@@ -125,3 +125,15 @@ jobs:
                -d "All quiet. The daily check ran today and there have been no fixture changes in the past 7 days. Last run: $last_run_utc." \
                "ntfy.sh/$TOPIC"
 
+      - name: Alert on failure
+        if: failure()
+        env:
+          TOPIC: ${{ secrets.NTFY_TOPIC_HEARTBEAT }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          if [ -z "$TOPIC" ]; then echo "::error::NTFY_TOPIC_HEARTBEAT is not set"; exit 1; fi
+          curl -fsS -H "Title: Fixtures workflow failed" \
+               -H "Tags: warning" \
+               -H "Click: $RUN_URL" \
+               -d "Update fixtures run failed (trigger: $GITHUB_EVENT_NAME). $RUN_URL" \
+               "ntfy.sh/$TOPIC"
