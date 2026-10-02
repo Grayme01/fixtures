@@ -25,9 +25,12 @@ jobs:
       - run: pip install curl_cffi
 
       # Teams (active and archived) are configured in teams.toml.
+      # Each active team's ntfy_secret must also be passed here. Passing all
+      # secrets via toJSON(secrets) gets the run held as "may be malicious"
+      # until manually approved, which blocks every scheduled run.
       - name: Update active teams
         env:
-          SECRETS: ${{ toJSON(secrets) }}
+          NTFY_TOPIC_MARRICKVILLE: ${{ secrets.NTFY_TOPIC_MARRICKVILLE }}
         run: python3 update.py
 
       # --- Weekly heartbeat ---

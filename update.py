@@ -2,14 +2,13 @@
 Regenerate every active team's .ics from teams.toml, commit any changes, and
 send per-team ntfy notifications.
 
-Usage (CI):     SECRETS='<toJSON(secrets)>' python3 update.py
+Usage (CI):     NTFY_TOPIC_<TEAM>=<topic> ... python3 update.py
 Usage (local):  python3 update.py --dry-run   # no secrets, commit or notify
 """
 
 from __future__ import annotations
 
 import argparse
-import json
 import os
 import subprocess
 import sys
@@ -35,11 +34,12 @@ def load_teams(path: Path) -> list[dict[str, Any]]:
 def load_secrets(active: list[dict[str, Any]]) -> dict[str, str]:
     """Fail before any fetching if an active team's ntfy topic is unset; an
     empty topic would otherwise only surface when a notification is due."""
-    secrets = json.loads(os.environ.get("SECRETS") or "{}")
-    missing = [t["ntfy_secret"] for t in active if not secrets.get(t["ntfy_secret"])]
+    secrets = {t["ntfy_secret"]: os.environ.get(t["ntfy_secret"], "") for t in active}
+    missing = [name for name, value in secrets.items() if not value]
     if missing:
         for name in missing:
-            print(f"::error::Repo secret {name} is not set", file=sys.stderr)
+            print(f"::error::{name} is empty: create the repo secret and pass it in "
+                  "the 'Update active teams' step env", file=sys.stderr)
         sys.exit(1)
     return secrets
 
