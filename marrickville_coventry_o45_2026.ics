@@ -7,7 +7,7 @@ X-WR-CALNAME:Coventry City FC (Marrickville O45 F5s)
 X-WR-TIMEZONE:Australia/Sydney
 BEGIN:VEVENT
 UID:ld45MgG3xm@dribl
-DTSTAMP:20261002T101508Z
+DTSTAMP:20261004T003424Z
 DTSTART:20261008T090000Z
 DTEND:20261008T094500Z
 SUMMARY:Coventry City FC v Besiktas
@@ -18,7 +18,7 @@ URL:https://marrickvillefc.dribl.com/matchcentre?m=Omep8Pwj1d
 END:VEVENT
 BEGIN:VEVENT
 UID:gdM6nea8Qm@dribl
-DTSTAMP:20261002T101508Z
+DTSTAMP:20261004T003424Z
 DTSTART:20261015T090000Z
 DTEND:20261015T094500Z
 SUMMARY:Young Boys v Coventry City FC
@@ -29,7 +29,7 @@ URL:https://marrickvillefc.dribl.com/matchcentre?m=2Kp0G4a0BK
 END:VEVENT
 BEGIN:VEVENT
 UID:nmYn0A1pbN@dribl
-DTSTAMP:20261002T101508Z
+DTSTAMP:20261004T003424Z
 DTSTART:20261022T090500Z
 DTEND:20261022T095000Z
 SUMMARY:Coventry City FC v Cusco FC
@@ -37,5 +37,38 @@ LOCATION:Tempe Recreation Reserve\, Field 03
 DESCRIPTION:League: Over 45 Men Black Male\nRound: Round 3\nCompetition: Marrickville F5s\nhttps://marrickvillefc.dribl.com/matchcentre?m=jmaz87ElVN
 GEO:-33.92953;151.16037
 URL:https://marrickvillefc.dribl.com/matchcentre?m=jmaz87ElVN
+END:VEVENT
+BEGIN:VEVENT
+UID:PmrGQ9waAN@dribl
+DTSTAMP:20261004T003424Z
+DTSTART:20261029T090000Z
+DTEND:20261029T094500Z
+SUMMARY:Coventry City FC v Olympiakos
+LOCATION:Tempe Recreation Reserve\, Field 16
+DESCRIPTION:League: Over 45 Men Black Male\nRound: Round 4\nCompetition: Marrickville F5s\nhttps://marrickvillefc.dribl.com/matchcentre?m=Pmj28rEZkm
+GEO:-33.92953;151.16037
+URL:https://marrickvillefc.dribl.com/matchcentre?m=Pmj28rEZkm
+END:VEVENT
+BEGIN:VEVENT
+UID:pN6RryQnQN@dribl
+DTSTAMP:20261004T003424Z
+DTSTART:20261105T080000Z
+DTEND:20261105T084500Z
+SUMMARY:Cusco FC v Coventry City FC
+LOCATION:Tempe Recreation Reserve\, Field 03
+DESCRIPTION:League: Over 45 Men Black Male\nRound: Round 10\nCompetition: Marrickville F5s\nhttps://marrickvillefc.dribl.com/matchcentre?m=Omep8PMByd
+GEO:-33.92953;151.16037
+URL:https://marrickvillefc.dribl.com/matchcentre?m=Omep8PMByd
+END:VEVENT
+BEGIN:VEVENT
+UID:1K3pMAOjRd@dribl
+DTSTAMP:20261004T003424Z
+DTSTART:20261105T090500Z
+DTEND:20261105T095000Z
+SUMMARY:Oldham Athletic AFC v Coventry City FC
+LOCATION:Tempe Recreation Reserve\, Field 03
+DESCRIPTION:League: Over 45 Men Black Male\nRound: Round 5\nCompetition: Marrickville F5s\nhttps://marrickvillefc.dribl.com/matchcentre?m=BdDbywAG4N
+GEO:-33.92953;151.16037
+URL:https://marrickvillefc.dribl.com/matchcentre?m=BdDbywAG4N
 END:VEVENT
 END:VCALENDAR
