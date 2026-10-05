@@ -7,7 +7,7 @@ X-WR-CALNAME:Coventry City FC (Marrickville O45 F5s)
 X-WR-TIMEZONE:Australia/Sydney
 BEGIN:VEVENT
 UID:ld45MgG3xm@dribl
-DTSTAMP:20261004T003424Z
+DTSTAMP:20261005T053620Z
 DTSTART:20261008T090000Z
 DTEND:20261008T094500Z
 SUMMARY:Coventry City FC v Besiktas
@@ -18,7 +18,7 @@ URL:https://marrickvillefc.dribl.com/matchcentre?m=Omep8Pwj1d
 END:VEVENT
 BEGIN:VEVENT
 UID:gdM6nea8Qm@dribl
-DTSTAMP:20261004T003424Z
+DTSTAMP:20261005T053620Z
 DTSTART:20261015T090000Z
 DTEND:20261015T094500Z
 SUMMARY:Young Boys v Coventry City FC
@@ -29,7 +29,7 @@ URL:https://marrickvillefc.dribl.com/matchcentre?m=2Kp0G4a0BK
 END:VEVENT
 BEGIN:VEVENT
 UID:nmYn0A1pbN@dribl
-DTSTAMP:20261004T003424Z
+DTSTAMP:20261005T053620Z
 DTSTART:20261022T090500Z
 DTEND:20261022T095000Z
 SUMMARY:Coventry City FC v Cusco FC
@@ -40,7 +40,7 @@ URL:https://marrickvillefc.dribl.com/matchcentre?m=jmaz87ElVN
 END:VEVENT
 BEGIN:VEVENT
 UID:PmrGQ9waAN@dribl
-DTSTAMP:20261004T003424Z
+DTSTAMP:20261005T053620Z
 DTSTART:20261029T090000Z
 DTEND:20261029T094500Z
 SUMMARY:Coventry City FC v Olympiakos
@@ -51,7 +51,7 @@ URL:https://marrickvillefc.dribl.com/matchcentre?m=Pmj28rEZkm
 END:VEVENT
 BEGIN:VEVENT
 UID:pN6RryQnQN@dribl
-DTSTAMP:20261004T003424Z
+DTSTAMP:20261005T053620Z
 DTSTART:20261105T080000Z
 DTEND:20261105T084500Z
 SUMMARY:Cusco FC v Coventry City FC
@@ -62,7 +62,7 @@ URL:https://marrickvillefc.dribl.com/matchcentre?m=Omep8PMByd
 END:VEVENT
 BEGIN:VEVENT
 UID:1K3pMAOjRd@dribl
-DTSTAMP:20261004T003424Z
+DTSTAMP:20261005T053620Z
 DTSTART:20261105T090500Z
 DTEND:20261105T095000Z
 SUMMARY:Oldham Athletic AFC v Coventry City FC
@@ -70,5 +70,49 @@ LOCATION:Tempe Recreation Reserve\, Field 03
 DESCRIPTION:League: Over 45 Men Black Male\nRound: Round 5\nCompetition: Marrickville F5s\nhttps://marrickvillefc.dribl.com/matchcentre?m=BdDbywAG4N
 GEO:-33.92953;151.16037
 URL:https://marrickvillefc.dribl.com/matchcentre?m=BdDbywAG4N
+END:VEVENT
+BEGIN:VEVENT
+UID:bd9pjP4AZK@dribl
+DTSTAMP:20261005T053620Z
+DTSTART:20261112T090000Z
+DTEND:20261112T094500Z
+SUMMARY:Coventry City FC v AS Cannes
+LOCATION:Tempe Recreation Reserve\, Field 13
+DESCRIPTION:League: Over 45 Men Black Male\nRound: Round 6\nCompetition: Marrickville F5s\nhttps://marrickvillefc.dribl.com/matchcentre?m=MNGJ6DAg7m
+GEO:-33.92953;151.16037
+URL:https://marrickvillefc.dribl.com/matchcentre?m=MNGJ6DAg7m
+END:VEVENT
+BEGIN:VEVENT
+UID:ld45MgGR0m@dribl
+DTSTAMP:20261005T053620Z
+DTSTART:20261119T090000Z
+DTEND:20261119T094500Z
+SUMMARY:Dandy Town Hornets FC v Coventry City FC
+LOCATION:Tempe Recreation Reserve\, Field 13
+DESCRIPTION:League: Over 45 Men Black Male\nRound: Round 7\nCompetition: Marrickville F5s\nhttps://marrickvillefc.dribl.com/matchcentre?m=jmaz87EWqN
+GEO:-33.92953;151.16037
+URL:https://marrickvillefc.dribl.com/matchcentre?m=jmaz87EWqN
+END:VEVENT
+BEGIN:VEVENT
+UID:emAnJzx31N@dribl
+DTSTAMP:20261005T053620Z
+DTSTART:20261126T090000Z
+DTEND:20261126T094500Z
+SUMMARY:Besiktas v Coventry City FC
+LOCATION:Tempe Recreation Reserve\, Field 02
+DESCRIPTION:League: Over 45 Men Black Male\nRound: Round 8\nCompetition: Marrickville F5s\nhttps://marrickvillefc.dribl.com/matchcentre?m=nmYn0x9naN
+GEO:-33.92953;151.16037
+URL:https://marrickvillefc.dribl.com/matchcentre?m=nmYn0x9naN
+END:VEVENT
+BEGIN:VEVENT
+UID:8NO540en2d@dribl
+DTSTAMP:20261005T053620Z
+DTSTART:20261203T090000Z
+DTEND:20261203T094500Z
+SUMMARY:Coventry City FC v Young Boys
+LOCATION:Tempe Recreation Reserve\, Field 26
+DESCRIPTION:League: Over 45 Men Black Male\nRound: Round 9\nCompetition: Marrickville F5s\nhttps://marrickvillefc.dribl.com/matchcentre?m=PmrGQlMGLN
+GEO:-33.92953;151.16037
+URL:https://marrickvillefc.dribl.com/matchcentre?m=PmrGQlMGLN
 END:VEVENT
 END:VCALENDAR
